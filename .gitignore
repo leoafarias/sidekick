@@ -43,3 +43,30 @@ app.*.map.json
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 .fvm/flutter_sdk
+
+
+# Example builds
+/examples/*/AppDir
+/examples/*/appimage-builder-cache
+/AppDir
+/appimage-builder-cache
+
+# Build results
+*.AppImage
+*.AppImage.zsync
+
+### Snap ###
+# gitginore template for creating Snap packages
+# website: https://snapcraft.io/
+
+parts/
+prime/
+stage/
+*.snap
+
+### Snapcraft ###
+/parts/
+/stage/
+/prime/
+/*.snap
+

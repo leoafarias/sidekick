@@ -8,7 +8,7 @@ name: Release Artifacts
 jobs:
   build-linux:
     name: "Build Linux"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -29,6 +29,27 @@ jobs:
 
       - name: Set new Flutter version
         run: cider version ${{ github.event.release.tag_name }}
+
+      - name: Set Sidekick.desktop version
+        uses: DamianReeves/write-file-action@v1.0
+        with:
+          path: Sidekick.desktop
+          contents: Version=${{ github.event.release.tag_name }}
+          write-mode: append
+
+      - name: Set Sidekick.desktop version (snap version)
+        uses: DamianReeves/write-file-action@v1.0
+        with:
+          path: snap/gui/sidekick.desktop
+          contents: Version=${{ github.event.release.tag_name }}
+          write-mode: append
+
+      - name: Set snapcraft.yaml version
+        uses: DamianReeves/write-file-action@v1.0
+        with:
+          path: snap/snapcraft.yaml
+          contents: 'version: "${{ github.event.release.tag_name }}"'
+          write-mode: append
 
       - name: Set release changelog
         run: cider release
@@ -54,6 +75,22 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           # Local file to upload.
           file: linux-${{ github.event.release.tag_name }}.zip
+          # Tag to use as a release.
+          tag: ${{ github.ref }}
+
+      - name: Build AppImage
+        uses: AppImageCrafters/build-appimage@master
+        with:
+          recipe: "AppImageBuilder.yml"
+
+      - name: Upload AppImage to release
+        uses: svenstaro/upload-release-action@2.2.1
+        with:
+          # GitHub token.
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          # Local file to upload.
+          file: Sidekick-latest-x86_64.AppImage
+          asset_name: sidekick-linux-${{ github.event.release.tag_name }}.AppImage
           # Tag to use as a release.
           tag: ${{ github.ref }}
 

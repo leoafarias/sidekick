@@ -1,0 +1,26 @@
+# This is a development snapcraft file, no version is specified. Uncomment the line below to build a snap.
+#version: "0.1.0"
+name: sidekick
+summary: Flutter Sidekick
+description: |
+  Sidekick is an app that provides a simple desktop interface to tools that enhance Flutter development experience to make it even more delightful.
+
+confinement: strict
+base: core18
+grade: stable
+icon: snap/gui/Sidekick.png
+
+apps:
+  sidekick:
+    command: desktop-launch Sidekick
+    extensions: [flutter-beta]
+    plugs:
+      - network
+      - desktop
+      - home
+
+parts:
+  sidekick:
+    source: https://github.com/leoafarias/sidekick.git
+    plugin: flutter
+    flutter-target: lib/main.dart

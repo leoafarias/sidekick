@@ -1,0 +1,10 @@
+[Desktop Entry]
+# This is a development .desktop file, no version is specified.
+Terminal=false
+Type=Application
+Name=Flutter Sidekick
+StartupWMClass=sidekick
+Comment=Sidekick is an app that provides a simple desktop interface to tools that enhance Flutter development experience to make it even more delightful.
+Exec=Sidekick %F
+Icon=snap/gui/Sidekick.png
+Categories=Utility;
