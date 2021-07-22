@@ -56,7 +56,7 @@ class FvmApp extends StatelessWidget {
       return const ErrorDBScreen();
     }
 
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<Box<SidekickSettings>>(
       valueListenable: SettingsService.box.listenable(),
       builder: (context, box, widget) {
         final settings = SettingsService.read();
@@ -70,6 +70,7 @@ class FvmApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: S.delegate.supportedLocales,
+            locale: Locale(settings.intl?? 'en'),
             title: kAppTitle,
             debugShowCheckedModeBanner: false,
             theme: lightTheme,

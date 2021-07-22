@@ -24,7 +24,6 @@ enum NavSection {
   flutter,
 }
 
-var _sections = [S.current.general, 'FVM', 'Flutter'];
 
 const _sectionIcons = [
   MdiIcons.tune,
@@ -50,6 +49,8 @@ class SettingsScreen extends HookWidget {
     final currentSection = useState(section.index);
 
     final controller = usePageController(initialPage: section.index);
+
+    final _sections = [S.current.general, 'FVM', 'Flutter'];
 
     void changeSection(int idx) {
       currentSection.value = idx;
