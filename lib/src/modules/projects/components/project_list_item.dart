@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:path/path.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 import 'package:sidekick/src/modules/settings/settings.provider.dart';
 import 'package:sidekick/src/modules/settings/settings.utils.dart';
@@ -68,8 +72,12 @@ class ProjectListItem extends ConsumerWidget {
         child: Card(
           child: Column(
             children: [
+              // if (project.iconPath != null) Text(project.iconPath!),
               ListTile(
-                leading: const Icon(MdiIcons.alphaPBox),
+                leading: SizedBox(
+                  width: 20,
+                  child: project.icon,
+                ),
                 title: Subheading(project.name),
                 trailing: ProjectActions(project),
               ),
