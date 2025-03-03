@@ -40,7 +40,7 @@ jobs:
           filename: linux-dev.zip
 
       - name: Upload Build Zip
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v4
         with:
           name: sidekick-linux-dev.zip
           path: linux-dev.zip
@@ -61,7 +61,7 @@ jobs:
           appimage-builder --recipe AppImageBuilder.yml
 
       - name: Upload Build AppImage
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v4
         with:
           name: sidekick-linux-dev.AppImage
           path: Sidekick-latest-x86_64.AppImage
@@ -106,13 +106,13 @@ jobs:
         run: zip -r macos-dev.zip build/macos/Build/Products/Release
 
       - name: Upload Build DMG
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v4
         with:
           name: sidekick-macos-dev.dmg
           path: build/macos/Build/Products/Release/Sidekick.dmg
 
       - name: Upload Build Zip
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v4
         with:
           name: sidekick-macos-dev.zip
           path: macos-dev.zip
@@ -156,7 +156,7 @@ jobs:
         run: tar.exe -zcvf windows-dev.zip build\windows\x64\runner\Release
 
       - name: Upload Build Zip
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v4
         with:
           name: sidekick-windows-dev.zip
           path: windows-dev.zip
