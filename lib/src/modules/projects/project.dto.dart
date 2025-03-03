@@ -115,7 +115,11 @@ class FlutterProject extends Project {
     }
 
     // Traverse the project assets directory to find the logo file
-    List<File> findImageFiles = findLogoImages(join(projectDir.path, "assets"));
+    final assetsPath = join(projectDir.path, "assets");
+    final directory = Directory(assetsPath);
+    List<File> findImageFiles = directory.existsSync() 
+        ? findLogoImages(assetsPath) 
+        : [];
     if (findImageFiles.isNotEmpty) {
       return Image.file(findImageFiles.first);
     }
