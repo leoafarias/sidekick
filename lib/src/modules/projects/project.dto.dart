@@ -58,9 +58,10 @@ class FlutterProject extends Project {
 
   /// Project icon path
   Widget get icon {
-    // 定义查找规则列表，按照优先级排列
+    // Define a list of search rules, sorted by priority
     List<LookupRule> lookupRules = [
-      LookupRule(['sidekick', 'icon']), // 优先级最高 pubspec.yaml sidekick.icon
+      LookupRule(
+          ['sidekick', 'icon']), // Highest priority: pubspec.yaml sidekick.icon
       LookupRule([
         'flutter_launcher_icons',
         'image_path'
@@ -69,7 +70,7 @@ class FlutterProject extends Project {
           fileName: "flutter_launcher_icons.yaml"),
       LookupRule(['flutter_launcher_icons', 'image_path'],
           regexPattern: r'^flutter_launcher_icons-(.*).yaml$'),
-      // 可以添加多级嵌套的查找规则，例如
+      // You can add multiple levels of nested search rules, for example
       // LookupRule(['deeply', 'nested', 'key']),
     ];
 
@@ -100,20 +101,20 @@ class FlutterProject extends Project {
             }
           }
           if (found && currentMap is String) {
-            // 判断路径是否是本地路径 或者是网络路径
+            // TODO: Determine whether the path is a local path or a network path
             File imgFile = File(join(projectDir.path, currentMap));
             if (imgFile.existsSync()) {
               return Image.file(imgFile);
             }
           }
         } catch (e) {
-          // 处理解析 YAML 文件时可能出现的异常
-          print('解析 YAML 文件 ${lookUpFile.path} 时出错: $e');
+          // Handle possible exceptions when parsing YAML files
+          print('Error parsing YAML file ${lookUpFile.path}: $e');
         }
       }
     }
 
-    // fallback 遍历项目assets目录 查找logo文件
+    // Traverse the project assets directory to find the logo file
     List<File> findImageFiles = findLogoImages(join(projectDir.path, "assets"));
     if (findImageFiles.isNotEmpty) {
       return Image.file(findImageFiles.first);
@@ -122,11 +123,11 @@ class FlutterProject extends Project {
     return FlutterLogo();
   }
 
-  /// 定义常见图片文件扩展名
+  /// Define the file extension of the logo image
   static List<String> imageExtensions = ['.png', '.jpg', '.jpeg'];
 
-  /// 获取项目路径下可能为logo的文件
-  // 递归遍历目录，查找名称包含 logo 的图片文件
+  /// Get the file that may be the logo in the project assets path
+  /// Traverse the directory and search for image files whose names contain logo
   List<File> findLogoImages(String directoryPath) {
     final Directory directory = Directory(directoryPath);
     final List<File> logoImages = [];
@@ -154,66 +155,29 @@ class FlutterProject extends Project {
     return logoImages;
   }
 
-  /// 根据文件名或正则表达式获取 YAML 文件
-  Future<List<File>> getYamlFiles(String directoryPath,
-      {String? fileName, String? regexPattern}) async {
-    final directory = Directory(directoryPath);
-    final yamlFiles = <File>[];
-
-    // 检查目录是否存在
-    if (await directory.exists()) {
-      // 遍历目录中的所有实体（文件和子目录）
-      await for (final entity in directory.list(recursive: true)) {
-        if (entity is File) {
-          // 获取文件名
-          final currentFileName =
-              entity.path.split(Platform.pathSeparator).last;
-
-          bool isMatch = false;
-          if (fileName != null) {
-            // 根据文件名匹配
-            isMatch = currentFileName == fileName &&
-                currentFileName.endsWith('.yaml');
-          } else if (regexPattern != null) {
-            // 根据正则表达式匹配
-            final regex = RegExp(regexPattern);
-            isMatch = regex.hasMatch(currentFileName) &&
-                currentFileName.endsWith('.yaml');
-          }
-
-          if (isMatch) {
-            yamlFiles.add(entity);
-          }
-        }
-      }
-    }
-
-    return yamlFiles;
-  }
-
-  /// 根据文件名或正则表达式同步获取 YAML 文件
+  /// Synchronously retrieve YAML files based on file name or regular expression
   List<File> getYamlFilesSync(String directoryPath,
       {String? fileName, String? regexPattern}) {
     final directory = Directory(directoryPath);
     final yamlFiles = <File>[];
 
-    // 检查目录是否存在
+    // Check if a directory exists
     if (directory.existsSync()) {
-      // 同步遍历目录中的所有实体（文件和子目录）
+      // Synchronously traverse all entities (files and subdirectories) in a directory
       final entities = directory.listSync(recursive: true);
       for (final entity in entities) {
         if (entity is File) {
-          // 获取文件名
+          // Get the file name
           final currentFileName =
               entity.path.split(Platform.pathSeparator).last;
 
           bool isMatch = false;
           if (fileName != null) {
-            // 根据文件名匹配
+            // Matching by file name
             isMatch = currentFileName == fileName &&
                 currentFileName.endsWith('.yaml');
           } else if (regexPattern != null) {
-            // 根据正则表达式匹配
+            // Matching by regular expression
             final regex = RegExp(regexPattern);
             isMatch = regex.hasMatch(currentFileName) &&
                 currentFileName.endsWith('.yaml');
@@ -278,7 +242,7 @@ class ProjectPathAdapter extends TypeAdapter<ProjectRef> {
   }
 }
 
-/// 查找规则类，支持多级键  default is pubspec
+/// Search rule class, supports multi-level keys, default fileName is pubspec
 class LookupRule {
   final String? fileName;
   final String? regexPattern;
