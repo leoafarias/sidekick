@@ -5,6 +5,7 @@ import 'package:fvm/fvm.dart';
 import 'package:hive/hive.dart';
 import 'package:path/path.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
+import 'package:sidekick/src/modules/common/utils/notify.dart';
 import 'package:yaml/yaml.dart';
 
 /// Flutter project
@@ -109,7 +110,7 @@ class FlutterProject extends Project {
           }
         } catch (e) {
           // Handle possible exceptions when parsing YAML files
-          print('Error parsing YAML file ${lookUpFile.path}: $e');
+          notifyError('Error parsing YAML file ${lookUpFile.path}: $e');
         }
       }
     }
@@ -117,14 +118,13 @@ class FlutterProject extends Project {
     // Traverse the project assets directory to find the logo file
     final assetsPath = join(projectDir.path, "assets");
     final directory = Directory(assetsPath);
-    List<File> findImageFiles = directory.existsSync() 
-        ? findLogoImages(assetsPath) 
-        : [];
+    List<File> findImageFiles =
+        directory.existsSync() ? findLogoImages(assetsPath) : [];
     if (findImageFiles.isNotEmpty) {
       return Image.file(findImageFiles.first);
     }
 
-    return FlutterLogo();
+    return const FlutterLogo();
   }
 
   /// Define the file extension of the logo image

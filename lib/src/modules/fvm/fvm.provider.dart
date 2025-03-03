@@ -17,14 +17,14 @@ import '../releases/releases.provider.dart';
 /// Cache provider
 final cacheSizeProvider =
     StateProvider<DirectorySizeInfo>((_) => DirectorySizeInfo());
-  
+
 /// Unused
 
 final unusedReleaseSizeProvider = FutureProvider((ref) {
   final unused = ref.watch(unusedVersionProvider);
   // Get all directories
   final directories = unused.map((version) => version.cache?.dir);
-  return getDirectoriesSize(directories.whereNotNull());
+  return getDirectoriesSize(directories.nonNulls);
 });
 
 /// Provider that shows

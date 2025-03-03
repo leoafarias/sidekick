@@ -78,7 +78,7 @@ class SearchBar extends HookConsumerWidget {
               physics: const BouncingScrollPhysics(),
               debounceDelay: const Duration(milliseconds: 200),
               width: MediaQuery.of(context).size.width / 1.5,
-              backdropColor: Colors.black.withOpacity(0.5),
+              backdropColor: Colors.black.withAlpha((255 * 0.5).round()),
               onFocusChanged: onFocusChanged,
               // transition: CircularFloatingSearchBarTransition(),
               scrollPadding: const EdgeInsets.all(0),
