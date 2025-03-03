@@ -12,10 +12,10 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@4
+      - uses: actions/checkout@v2.4.0
 
       - name: Setup Flutter SDK
-        uses: subosito/flutter-action@2
+        uses: subosito/flutter-action@v2.6.1
         with:
           channel: "stable"
 
@@ -73,10 +73,10 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@4
+      - uses: actions/checkout@v2.4.0
 
       - name: Setup Flutter SDK
-        uses: subosito/flutter-action@2
+        uses: subosito/flutter-action@v2.6.1
         with:
           channel: "stable"
 
@@ -124,10 +124,10 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@4
+      - uses: actions/checkout@v2.4.0
 
       - name: Setup Flutter SDK
-        uses: subosito/flutter-action@2
+        uses: subosito/flutter-action@v2.6.1
         with:
           channel: "stable"
 
