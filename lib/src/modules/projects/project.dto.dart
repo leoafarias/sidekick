@@ -80,7 +80,7 @@ class FlutterProject extends Project {
         yamlFiles =
             getYamlFilesSync(projectDir.path, regexPattern: rule.regexPattern);
       } else {
-        // 当 rule.fileName 和 rule.regexPattern 都为 null 时，使用 pubspec.yaml
+        // When rule.fileName and rule.regexPattern are both null, use pubspec.yaml
         File pubspecFile = File(join(projectDir.path, 'pubspec.yaml'));
         if (pubspecFile.existsSync()) {
           yamlFiles.add(pubspecFile);
