@@ -108,7 +108,9 @@ List<Widget> _buildIconsBackground({
         child: Icon(
           icon.icon,
           size: _iconSize * i['size']!.toInt(),
-          color: color?.withOpacity(i['opacity'] ?? 1.0),
+          color: color?.withAlpha(
+            (255 * (i['opacity'] ?? 1.0)).round(),
+          ),
         ),
       );
     }).toList();

@@ -41,7 +41,7 @@ class SettingsSectionFlutter extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.deepOrange.withOpacity(0.1),
+                        color: Colors.deepOrange.withAlpha((255 * 0.1).round()),
                         border: Border.all(
                           color: Colors.deepOrange,
                           width: 0.5,

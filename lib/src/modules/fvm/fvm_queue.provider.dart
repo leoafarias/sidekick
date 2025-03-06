@@ -190,6 +190,7 @@ class FvmQueueState extends StateNotifier<FvmQueue> {
             ),
           );
           break;
+        // ignore: unreachable_switch_default
         default:
           break;
       }

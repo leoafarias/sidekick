@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:collection/collection.dart';
 import 'package:fvm/fvm.dart';
 import 'package:hive/hive.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
@@ -53,7 +52,7 @@ class ProjectsService {
     });
 
     final results = await Future.wait(flutterProjects);
-    return results.whereNotNull();
+    return results.nonNulls;
   }
 
   // /// Loads one project

@@ -68,8 +68,12 @@ class ProjectListItem extends ConsumerWidget {
         child: Card(
           child: Column(
             children: [
+              // if (project.iconPath != null) Text(project.iconPath!),
               ListTile(
-                leading: const Icon(MdiIcons.alphaPBox),
+                leading: SizedBox(
+                  width: 20,
+                  child: project.icon,
+                ),
                 title: Subheading(project.name),
                 trailing: ProjectActions(project),
               ),
