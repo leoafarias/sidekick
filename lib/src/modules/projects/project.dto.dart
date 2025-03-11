@@ -11,9 +11,6 @@ import 'package:yaml/yaml.dart';
 /// Flutter project
 class FlutterProject extends Project {
   /// Project constructor
-  @override
-  // ignore: overridden_fields
-  final String name;
   FlutterProject._({
     required this.name,
     required super.config,
@@ -24,6 +21,10 @@ class FlutterProject extends Project {
           name: name,
           isFlutterProject: true,
         );
+
+  @override
+  // ignore: overridden_fields
+  final String name;
 
   /// If a project does not have pubspec
   final bool invalid;
@@ -57,8 +58,18 @@ class FlutterProject extends Project {
     return pubspec?.description ?? '';
   }
 
+  // Cache for the icon to avoid repeated file I/O
+  Widget? _cachedIcon;
+
+  Widget? get cacheIcon => _cachedIcon;
+
   /// Project icon path
-  Widget get icon {
+  Future<Widget> get icon async {
+    // Return cached icon if available
+    if (_cachedIcon != null) {
+      return _cachedIcon!;
+    }
+
     // Define a list of search rules, sorted by priority
     List<LookupRule> lookupRules = [
       LookupRule(
@@ -78,19 +89,19 @@ class FlutterProject extends Project {
     for (LookupRule rule in lookupRules) {
       List<File> yamlFiles = [];
       if (rule.fileName != null || rule.regexPattern != null) {
-        yamlFiles =
-            getYamlFilesSync(projectDir.path, regexPattern: rule.regexPattern);
+        yamlFiles = await getYamlFiles(projectDir.path,
+            regexPattern: rule.regexPattern);
       } else {
         // When rule.fileName and rule.regexPattern are both null, use pubspec.yaml
         File pubspecFile = File(join(projectDir.path, 'pubspec.yaml'));
-        if (pubspecFile.existsSync()) {
+        if (await pubspecFile.exists()) {
           yamlFiles.add(pubspecFile);
         }
       }
 
       for (File lookUpFile in yamlFiles) {
         try {
-          YamlMap yamlMap = loadYaml(lookUpFile.readAsStringSync());
+          YamlMap yamlMap = loadYaml(await lookUpFile.readAsString());
           dynamic currentMap = yamlMap;
           bool found = true;
           for (String key in rule.keys) {
@@ -104,8 +115,9 @@ class FlutterProject extends Project {
           if (found && currentMap is String) {
             // TODO: Determine whether the path is a local path or a network path
             File imgFile = File(join(projectDir.path, currentMap));
-            if (imgFile.existsSync()) {
-              return Image.file(imgFile);
+            if (await imgFile.exists()) {
+              _cachedIcon = Image.file(imgFile);
+              return _cachedIcon!;
             }
           }
         } catch (e) {
@@ -119,12 +131,14 @@ class FlutterProject extends Project {
     final assetsPath = join(projectDir.path, "assets");
     final directory = Directory(assetsPath);
     List<File> findImageFiles =
-        directory.existsSync() ? findLogoImages(assetsPath) : [];
+        await directory.exists() ? await findLogoImages(assetsPath) : [];
     if (findImageFiles.isNotEmpty) {
-      return Image.file(findImageFiles.first);
+      _cachedIcon = Image.file(findImageFiles.first);
+      return _cachedIcon!;
     }
 
-    return const FlutterLogo();
+    _cachedIcon = const FlutterLogo();
+    return _cachedIcon!;
   }
 
   /// Define the file extension of the logo image
@@ -132,13 +146,13 @@ class FlutterProject extends Project {
 
   /// Get the file that may be the logo in the project assets path
   /// Traverse the directory and search for image files whose names contain logo
-  List<File> findLogoImages(String directoryPath) {
+  Future<List<File>> findLogoImages(String directoryPath) async {
     final Directory directory = Directory(directoryPath);
     final List<File> logoImages = [];
 
-    if (directory.existsSync()) {
+    if (await directory.exists()) {
       final List<FileSystemEntity> entities =
-          directory.listSync(recursive: true);
+          await directory.list(recursive: true).toList();
       for (final entity in entities) {
         if (entity is File) {
           final String fileName =
@@ -160,15 +174,15 @@ class FlutterProject extends Project {
   }
 
   /// Synchronously retrieve YAML files based on file name or regular expression
-  List<File> getYamlFilesSync(String directoryPath,
-      {String? fileName, String? regexPattern}) {
+  Future<List<File>> getYamlFiles(String directoryPath,
+      {String? fileName, String? regexPattern}) async {
     final directory = Directory(directoryPath);
     final yamlFiles = <File>[];
 
     // Check if a directory exists
-    if (directory.existsSync()) {
+    if (await directory.exists()) {
       // Synchronously traverse all entities (files and subdirectories) in a directory
-      final entities = directory.listSync(recursive: true);
+      final entities = await directory.list(recursive: true).toList();
       for (final entity in entities) {
         if (entity is File) {
           // Get the file name
