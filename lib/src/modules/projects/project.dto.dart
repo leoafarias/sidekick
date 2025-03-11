@@ -61,7 +61,7 @@ class FlutterProject extends Project {
   // Cache for the icon to avoid repeated file I/O
   Widget? _cachedIcon;
 
-  Widget? get cacheIcon => _cachedIcon;
+  Widget? get cachedIcon => _cachedIcon;
 
   /// Project icon path
   Future<Widget> get icon async {
@@ -173,7 +173,7 @@ class FlutterProject extends Project {
     return logoImages;
   }
 
-  /// Synchronously retrieve YAML files based on file name or regular expression
+  /// Asynchronously retrieve YAML files based on file name or regular expression
   Future<List<File>> getYamlFiles(String directoryPath,
       {String? fileName, String? regexPattern}) async {
     final directory = Directory(directoryPath);

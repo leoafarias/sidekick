@@ -73,8 +73,8 @@ class ProjectListItem extends ConsumerWidget {
                 leading: SizedBox(
                   width: 20,
                   height: 20,
-                  child: project.cacheIcon != null
-                      ? project.cacheIcon!
+                  child: project.cachedIcon != null
+                      ? project.cachedIcon!
                       : FutureBuilder(
                           future: project.icon,
                           builder: (context, snapshot) {
