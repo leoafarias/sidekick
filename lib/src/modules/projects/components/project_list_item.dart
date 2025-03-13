@@ -68,8 +68,28 @@ class ProjectListItem extends ConsumerWidget {
         child: Card(
           child: Column(
             children: [
+              // if (project.iconPath != null) Text(project.iconPath!),
               ListTile(
-                leading: const Icon(MdiIcons.alphaPBox),
+                leading: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: project.cachedIcon != null
+                      ? project.cachedIcon!
+                      : FutureBuilder(
+                          future: project.icon,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return const Icon(Icons.error);
+                            } else if (snapshot.hasData) {
+                              return snapshot.data as Widget;
+                            } else {
+                              return const Icon(Icons.image_not_supported);
+                            }
+                          }),
+                ),
                 title: Subheading(project.name),
                 trailing: ProjectActions(project),
               ),

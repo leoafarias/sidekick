@@ -33,7 +33,7 @@ class SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
       margin: const EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        color: Theme.of(context).cardColor.withOpacity(0.2),
+        color: Theme.of(context).cardColor.withAlpha((255 * 0.2).round()),
       ),
       child: ListTile(
         title: Text(
