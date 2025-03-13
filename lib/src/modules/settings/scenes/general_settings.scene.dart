@@ -133,7 +133,7 @@ class SettingsSectionGeneral extends StatelessWidget {
                             ],
                           ),
                         ))
-                    
+
               ],
               onChanged: (val) async {
                 if (val == "Custom") {
@@ -158,6 +158,7 @@ class SettingsSectionGeneral extends StatelessWidget {
               value: settings.sidekick.locale ?? context.locale,
               items: languageManager.supportedLocales.map((locale) {
                 return DropdownMenuItem(
+                  key: Key("DropdownMenuItem${locale.toLanguageTag()}"),
                   value: locale,
                   child: Text(
                     context.i18n(
