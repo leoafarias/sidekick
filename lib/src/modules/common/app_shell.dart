@@ -118,6 +118,7 @@ class AppShell extends HookConsumerWidget {
         body: Row(
           children: [
             NavigationRail(
+              key: Key("NavigationRail${selectedIndex.value}"),
               backgroundColor: platformBackgroundColor(context),
               selectedIndex: selectedIndex.value,
               minWidth: kNavigationWidth,
