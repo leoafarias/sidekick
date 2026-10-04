@@ -8,21 +8,31 @@ import '../../modules/common/utils/helpers.dart';
 class FlutterConfigService {
   FlutterConfigService._();
 
+  /// Flutter executable used to read and write the Flutter config.
+  ///
+  /// Prefers the global version, falling back to any cached version, since
+  /// the config is shared by every SDK.
+  static Future<String?> _resolveFlutterExec() async {
+    final globalVersion = await FVMClient.getGlobal();
+    if (globalVersion != null) return globalVersion.flutterExec;
+
+    final cached = await FVMClient.getCachedVersions();
+    for (final version in cached) {
+      if (File(version.flutterExec).existsSync()) return version.flutterExec;
+    }
+
+    return null;
+  }
+
   /// Runs a simple Flutter cmd
   static Future<String> _runCmd(
     List<String> args,
   ) async {
-    // Get exec path for flutter
-    final globalVersion = await FVMClient.getGlobal();
+    final flutterExec = await _resolveFlutterExec();
 
-    if (globalVersion == null) {
-      // TODO: Need to change this
-      // Can only run with a global version configured
-      // Will cause settings to be all off
-      return '';
-    }
+    if (flutterExec == null) return '';
 
-    final result = await Process.run(globalVersion.flutterExec, args);
+    final result = await Process.run(flutterExec, args);
 
     if (result.exitCode == 0) {
       return result.stdout as String;
