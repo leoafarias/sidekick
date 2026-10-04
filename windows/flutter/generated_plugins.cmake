@@ -6,7 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_windows
   file_selector_windows
   flutter_acrylic
-  screen_retriever
+  screen_retriever_windows
   url_launcher_windows
   window_manager
 )
