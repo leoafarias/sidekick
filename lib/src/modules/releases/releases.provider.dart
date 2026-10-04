@@ -77,11 +77,29 @@ class AppReleasesState {
     _channels.add(channel);
   }
 
+  /// Whether [archive] is built for the host architecture
+  bool _isNativeArchive(String archive) {
+    final isArm = arch == ProcessorArchitecture.arm64;
+    return archive.contains('arm64') == isArm;
+  }
+
   void addVersion(VersionDto version) {
-    // TODO: Remove based on arch
-    final dupeList = _versions.where((element) => element.name == version.name);
-    if (dupeList.isEmpty) {
+    // The same version can be published for several architectures,
+    // keep a single entry and prefer the one built for the host.
+    final index = _versions.indexWhere((e) => e.name == version.name);
+    if (index == -1) {
       _versions.add(version);
+      return;
+    }
+
+    final existing = _versions[index].release;
+    final candidate = version.release;
+
+    if (existing != null &&
+        candidate != null &&
+        !_isNativeArchive(existing.archive) &&
+        _isNativeArchive(candidate.archive)) {
+      _versions[index] = version;
     }
   }
 
