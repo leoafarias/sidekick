@@ -9,6 +9,7 @@ import '../../modules/common/dto/master.dto.dart';
 import '../../modules/common/dto/release.dto.dart';
 import '../../modules/common/dto/version.dto.dart';
 import '../common/constants.dart';
+import '../common/utils/sdk_version.dart';
 import '../fvm/fvm.provider.dart';
 
 class AppReleasesState {
@@ -120,7 +121,7 @@ final releasesStateProvider = Provider<AppReleasesState>((ref) {
   final masterCache = installedVersions.getChannel(kMasterChannel);
   String? masterVersion;
   if (masterCache != null) {
-    masterVersion = FVMClient.getSdkVersionSync(masterCache);
+    masterVersion = getSdkVersionSync(masterCache);
   }
 
   releasesState.addMaster(MasterDto(
@@ -141,7 +142,7 @@ final releasesStateProvider = Provider<AppReleasesState>((ref) {
     Release? currentRelease;
 
     if (channelCache != null) {
-      sdkVersion = FVMClient.getSdkVersionSync(channelCache);
+      sdkVersion = getSdkVersionSync(channelCache);
       if (sdkVersion != null) {
         currentRelease = payload!.getReleaseFromVersion(sdkVersion);
       }
@@ -168,7 +169,7 @@ final releasesStateProvider = Provider<AppReleasesState>((ref) {
     String? sdkVersion;
 
     if (cacheVersion != null) {
-      sdkVersion = FVMClient.getSdkVersionSync(cacheVersion);
+      sdkVersion = getSdkVersionSync(cacheVersion);
     }
 
     final version = VersionDto(
