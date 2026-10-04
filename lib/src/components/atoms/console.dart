@@ -75,18 +75,23 @@ class Console extends HookWidget {
                 ),
                 secondChild: CupertinoScrollbar(
                   controller: consoleScrollController,
-                  child: ListView.builder(
-                    controller: consoleScrollController,
-                    primary: false,
-                    shrinkWrap: true,
-                    reverse: true,
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    itemBuilder: (context, index) {
-                      final line = lines.value[index];
+                  // Desktop adds its own scrollbar; hide it to avoid two bars.
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context)
+                        .copyWith(scrollbars: false),
+                    child: ListView.builder(
+                      controller: consoleScrollController,
+                      primary: false,
+                      shrinkWrap: true,
+                      reverse: true,
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                      itemBuilder: (context, index) {
+                        final line = lines.value[index];
 
-                      return ConsoleText(line);
-                    },
-                    itemCount: lines.value.length,
+                        return ConsoleText(line);
+                      },
+                      itemCount: lines.value.length,
+                    ),
                   ),
                 ),
               ),
