@@ -1,5 +1,5 @@
 import 'package:fvm/fvm.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 
 import '../common/dto/release.dto.dart';
 

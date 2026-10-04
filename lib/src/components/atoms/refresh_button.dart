@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../mdi_icons.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 
 /// Refresh button
@@ -41,7 +41,7 @@ class RefreshButton extends HookWidget {
       label: Text(context.i18n('components:atoms.refresh')),
       icon: refreshing.value
           ? renderIndicator()
-          : const Icon(MdiIcons.refresh, size: 20),
+          : Icon(MdiIcons.refresh, size: 20),
       onPressed: handleOnPress,
     );
   }

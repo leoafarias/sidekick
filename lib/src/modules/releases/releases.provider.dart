@@ -2,6 +2,7 @@
 import "package:system_info2/system_info2.dart";
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 import 'package:fvm/fvm.dart';
 
 import '../../modules/common/dto/channel.dto.dart';

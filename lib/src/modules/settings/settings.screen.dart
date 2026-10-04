@@ -2,7 +2,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../../components/mdi_icons.dart';
 
 import '../../modules/common/utils/helpers.dart';
 import '../../modules/common/utils/notify.dart';
@@ -24,7 +24,7 @@ enum NavSection {
   flutter,
 }
 
-const _sectionIcons = [
+final _sectionIcons = [
   MdiIcons.tune,
   MdiIcons.layers,
   MdiIcons.console,

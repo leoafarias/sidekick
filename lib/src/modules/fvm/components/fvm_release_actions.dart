@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../../../components/mdi_icons.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 
 import '../../../components/atoms/typography.dart';
@@ -120,7 +120,7 @@ class FvmReleaseActions extends ConsumerWidget {
       itemBuilder: (context) {
         return renderMenuOptions(context);
       },
-      child: const Icon(MdiIcons.dotsVertical),
+      child: Icon(MdiIcons.dotsVertical),
     );
   }
 }

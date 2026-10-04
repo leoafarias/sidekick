@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:async/async.dart';
 import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 import 'package:fvm/fvm.dart';
 import 'package:watcher/watcher.dart';
 

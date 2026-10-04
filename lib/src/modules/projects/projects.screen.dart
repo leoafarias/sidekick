@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../../components/mdi_icons.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 
@@ -93,7 +93,7 @@ class ProjectsScreen extends HookConsumerWidget {
         const SizedBox(width: 10),
         OutlinedButton.icon(
           onPressed: handleChooseDirectory,
-          icon: const Icon(MdiIcons.plus),
+          icon: Icon(MdiIcons.plus),
           label: Text(context.i18n('modules:projects.addProject')),
         ),
       ],

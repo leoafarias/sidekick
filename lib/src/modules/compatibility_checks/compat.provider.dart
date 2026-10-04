@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 import 'package:sidekick/src/modules/compatibility_checks/compat.utils.dart';
 import 'compat.dto.dart';
 

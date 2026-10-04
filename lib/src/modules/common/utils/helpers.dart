@@ -102,5 +102,4 @@ String collapseWhitespace(String string) {
   return result.toString().trim();
 }
 
-bool _isWhitespace(String ch) =>
-    ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t';
+bool _isWhitespace(String ch) => ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t';

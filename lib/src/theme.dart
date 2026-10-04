@@ -67,7 +67,7 @@ ThemeData _customThemeBuilder({
     popupMenuTheme: PopupMenuThemeData(
       shape: _roundedShape,
     ),
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       shape: _roundedShape,
       backgroundColor: scaffoldBackgroundColor,
       titleTextStyle: ThemeData.dark().textTheme.displayLarge,
@@ -75,7 +75,7 @@ ThemeData _customThemeBuilder({
     ),
     appBarTheme: const AppBarTheme(
       elevation: 0,
-      color: Colors.black54,
+      backgroundColor: Colors.black54,
     ),
     chipTheme: ThemeData.dark().chipTheme.copyWith(
           backgroundColor: Colors.black12,
@@ -95,18 +95,18 @@ ThemeData get lightTheme {
     dividerColor: Colors.black12,
     scaffoldBackgroundColor: const Color(0xfffafafa),
     textButtonTheme: _textButtonThemeData,
-    cardTheme: const CardTheme(
+    cardTheme: const CardThemeData(
       elevation: 3,
       shadowColor: Colors.black45,
     ),
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       shape: _roundedShape,
       titleTextStyle: ThemeData.light().textTheme.displaySmall,
       contentTextStyle: ThemeData.light().textTheme.bodyLarge,
     ),
     appBarTheme: const AppBarTheme(
       elevation: 0,
-      color: Color(0xFFF6F4F6),
+      backgroundColor: Color(0xFFF6F4F6),
       iconTheme: IconThemeData(),
     ),
   ).copyWith(
