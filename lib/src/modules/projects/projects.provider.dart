@@ -12,6 +12,7 @@ import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:fvm/fvm.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 
 import '../../modules/common/utils/notify.dart';

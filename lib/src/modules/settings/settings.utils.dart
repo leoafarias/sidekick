@@ -1,7 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../../components/mdi_icons.dart';
 import 'package:sidekick/src/modules/common/utils/open_link.dart';
 
 class SettingsThemeMode {
@@ -47,9 +47,9 @@ class IDE {
 final supportedIDEs = [
   IDE(
     SupportedIDE.VSCode,
-    const Icon(MdiIcons.microsoftVisualStudioCode),
+    Icon(MdiIcons.microsoftVisualStudioCode),
     openVsCode,
   ),
-  IDE(SupportedIDE.XCode, const Icon(MdiIcons.appleSafari), openXcode),
+  IDE(SupportedIDE.XCode, Icon(MdiIcons.appleSafari), openXcode),
   IDE(SupportedIDE.Custom, const Icon(Icons.code_rounded), openCustom),
 ];

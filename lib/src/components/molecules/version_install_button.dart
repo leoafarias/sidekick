@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../mdi_icons.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 
 import '../../modules/common/dto/release.dto.dart';
@@ -67,7 +67,7 @@ class VersionInstallButton extends HookConsumerWidget {
 
       // Display warning icon instead of download arrow
       if (isCached && version.needSetup) {
-        return const Icon(MdiIcons.alert, size: 20);
+        return Icon(MdiIcons.alert, size: 20);
       }
 
       if (isCached) {

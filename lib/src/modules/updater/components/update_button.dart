@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../../../components/mdi_icons.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 
 import '../../../components/atoms/typography.dart';
@@ -36,7 +36,7 @@ class SkUpdateButton extends HookConsumerWidget {
             buttonPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
             title: Row(
               children: [
-                const Icon(MdiIcons.alertDecagram),
+                Icon(MdiIcons.alertDecagram),
                 const SizedBox(width: 10),
                 Heading(
                     context.i18n('modules:updater.components.updateAvailable')),

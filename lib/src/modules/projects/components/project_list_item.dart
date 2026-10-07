@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../../../components/mdi_icons.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 import 'package:sidekick/src/modules/settings/settings.provider.dart';
 import 'package:sidekick/src/modules/settings/settings.utils.dart';
@@ -122,7 +122,7 @@ class ProjectListItem extends ConsumerWidget {
                     child: IconButton(
                       iconSize: 20,
                       splashRadius: 20,
-                      icon: const Icon(MdiIcons.consoleLine),
+                      icon: Icon(MdiIcons.consoleLine),
                       onPressed: openProjectPlayground,
                     ),
                   ),
@@ -137,7 +137,7 @@ class ProjectListItem extends ConsumerWidget {
                       child: IconButton(
                         iconSize: 20,
                         splashRadius: 20,
-                        icon: ide?.icon ?? const Icon(MdiIcons.alphaPBox),
+                        icon: ide?.icon ?? Icon(MdiIcons.alphaPBox),
                         onPressed: openIde,
                       ),
                     ),

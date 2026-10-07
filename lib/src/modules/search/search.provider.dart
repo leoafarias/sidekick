@@ -1,6 +1,7 @@
 // ignore_for_file: top_level_function_literal_block
 import 'package:fvm/fvm.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 import 'package:sidekick/src/modules/projects/project.dto.dart';
 
 import '../../modules/common/dto/channel.dto.dart';

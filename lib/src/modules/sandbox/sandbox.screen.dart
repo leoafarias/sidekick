@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fvm/fvm.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../../components/mdi_icons.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 
 import '../../components/atoms/typography.dart';
@@ -46,7 +46,7 @@ class SandboxScreen extends HookConsumerWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(MdiIcons.playBox),
+            Icon(MdiIcons.playBox),
             const SizedBox(width: 10),
             Subheading(context.i18n('modules:sandbox.playground')),
           ],

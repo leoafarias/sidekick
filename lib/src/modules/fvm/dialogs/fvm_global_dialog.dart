@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fvm/fvm.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../../../components/mdi_icons.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 
 import '../../../components/atoms/copy_button.dart';
@@ -91,7 +91,7 @@ Future<void> showGlobalInfoDialog(BuildContext context) async {
                       'https://flutter.dev/docs/get-started/install/$os#update-your-path',
                     );
                   },
-                  icon: const Icon(MdiIcons.informationOutline),
+                  icon: Icon(MdiIcons.informationOutline),
                   label: Text(
                     context.i18n('modules:fvm.dialogs.howToUpdateYourPath'),
                   ),

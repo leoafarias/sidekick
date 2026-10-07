@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fvm/fvm.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../../../components/mdi_icons.dart';
 import 'package:open_file/open_file.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 
@@ -82,7 +82,7 @@ class ProjectActions extends ConsumerWidget {
       itemBuilder: (context) {
         return renderMenuOptions(context);
       },
-      child: const Icon(MdiIcons.dotsVertical),
+      child: Icon(MdiIcons.dotsVertical),
     );
   }
 }

@@ -2,6 +2,7 @@
 import "package:system_info2/system_info2.dart";
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 import 'package:fvm/fvm.dart';
 
 import '../../modules/common/dto/channel.dto.dart';
@@ -9,6 +10,7 @@ import '../../modules/common/dto/master.dto.dart';
 import '../../modules/common/dto/release.dto.dart';
 import '../../modules/common/dto/version.dto.dart';
 import '../common/constants.dart';
+import '../common/utils/sdk_version.dart';
 import '../fvm/fvm.provider.dart';
 
 class AppReleasesState {
@@ -75,11 +77,29 @@ class AppReleasesState {
     _channels.add(channel);
   }
 
+  /// Whether [archive] is built for the host architecture
+  bool _isNativeArchive(String archive) {
+    final isArm = arch == ProcessorArchitecture.arm64;
+    return archive.contains('arm64') == isArm;
+  }
+
   void addVersion(VersionDto version) {
-    // TODO: Remove based on arch
-    final dupeList = _versions.where((element) => element.name == version.name);
-    if (dupeList.isEmpty) {
+    // The same version can be published for several architectures,
+    // keep a single entry and prefer the one built for the host.
+    final index = _versions.indexWhere((e) => e.name == version.name);
+    if (index == -1) {
       _versions.add(version);
+      return;
+    }
+
+    final existing = _versions[index].release;
+    final candidate = version.release;
+
+    if (existing != null &&
+        candidate != null &&
+        !_isNativeArchive(existing.archive) &&
+        _isNativeArchive(candidate.archive)) {
+      _versions[index] = version;
     }
   }
 
@@ -120,7 +140,7 @@ final releasesStateProvider = Provider<AppReleasesState>((ref) {
   final masterCache = installedVersions.getChannel(kMasterChannel);
   String? masterVersion;
   if (masterCache != null) {
-    masterVersion = FVMClient.getSdkVersionSync(masterCache);
+    masterVersion = getSdkVersionSync(masterCache);
   }
 
   releasesState.addMaster(MasterDto(
@@ -141,7 +161,7 @@ final releasesStateProvider = Provider<AppReleasesState>((ref) {
     Release? currentRelease;
 
     if (channelCache != null) {
-      sdkVersion = FVMClient.getSdkVersionSync(channelCache);
+      sdkVersion = getSdkVersionSync(channelCache);
       if (sdkVersion != null) {
         currentRelease = payload!.getReleaseFromVersion(sdkVersion);
       }
@@ -168,7 +188,7 @@ final releasesStateProvider = Provider<AppReleasesState>((ref) {
     String? sdkVersion;
 
     if (cacheVersion != null) {
-      sdkVersion = FVMClient.getSdkVersionSync(cacheVersion);
+      sdkVersion = getSdkVersionSync(cacheVersion);
     }
 
     final version = VersionDto(

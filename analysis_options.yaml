@@ -5,6 +5,7 @@ analyzer:
     - "**/*.g.dart"
     - "lib/src/generated/*.dart"
     - "lib/generated/intl/*.dart"
+    - third_party/**
 # linter:
 #   rules:
 

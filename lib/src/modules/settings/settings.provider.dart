@@ -1,5 +1,6 @@
 import 'package:fvm/fvm.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 
 import '../fvm/flutter_config.service.dart';
 import 'settings.dto.dart';

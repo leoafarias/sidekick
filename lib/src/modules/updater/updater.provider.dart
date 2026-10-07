@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 
 import '../../modifiers.dart';
 import 'updater.dto.dart';
@@ -21,12 +21,17 @@ class UpdaterStateNotifier extends StateNotifier<SidekickUpdateInfo> {
   Future<void> checkLatest() async {
     final updateInfo = await UpdaterService.checkLatestRelease();
 
-    if (updateInfo == null) {
-      throw Exception('Failed to check for latest release');
-    }
+    // Offline or GitHub unreachable: keep the current state instead of
+    // throwing from the notifier constructor.
+    if (updateInfo == null) return;
+
     state = updateInfo;
     if (state.needUpdate && !state.isInstalled) {
-      await download();
+      try {
+        await download();
+      } on UpdaterException catch (_) {
+        // Asset not available for this platform; leave update as pending.
+      }
     }
   }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../../../components/mdi_icons.dart';
 import 'package:sidekick/src/modules/common/dto/master.dto.dart';
 
 import 'fvm_setup_button.dart';
@@ -24,7 +24,7 @@ class FvmMasterStatus extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Icon(MdiIcons.checkCircle, size: 20),
+        Icon(MdiIcons.checkCircle, size: 20),
         SizedBox(width: masterChannel.isChannel ? 10 : 0),
         Text(masterChannel.sdkVersion ?? ''),
       ],

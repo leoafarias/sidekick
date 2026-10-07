@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../mdi_icons.dart';
 
 import '../../modules/fvm/fvm.provider.dart';
 import 'typography.dart';
@@ -75,18 +75,23 @@ class Console extends HookWidget {
                 ),
                 secondChild: CupertinoScrollbar(
                   controller: consoleScrollController,
-                  child: ListView.builder(
-                    controller: consoleScrollController,
-                    primary: false,
-                    shrinkWrap: true,
-                    reverse: true,
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    itemBuilder: (context, index) {
-                      final line = lines.value[index];
+                  // Desktop adds its own scrollbar; hide it to avoid two bars.
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context)
+                        .copyWith(scrollbars: false),
+                    child: ListView.builder(
+                      controller: consoleScrollController,
+                      primary: false,
+                      shrinkWrap: true,
+                      reverse: true,
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                      itemBuilder: (context, index) {
+                        final line = lines.value[index];
 
-                      return ConsoleText(line);
-                    },
-                    itemCount: lines.value.length,
+                        return ConsoleText(line);
+                      },
+                      itemCount: lines.value.length,
+                    ),
                   ),
                 ),
               ),
@@ -103,8 +108,8 @@ class Console extends HookWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 8),
                       child: expand
-                          ? const Icon(MdiIcons.chevronDown)
-                          : const Icon(MdiIcons.chevronUp),
+                          ? Icon(MdiIcons.chevronDown)
+                          : Icon(MdiIcons.chevronUp),
                     )
                   ],
                 ),
