@@ -4,6 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+/// Builds the app text theme.
+///
+/// Tests replace it so widget tests don't fetch fonts from Google Fonts.
+@visibleForTesting
+TextTheme Function([TextTheme? textTheme]) appTextTheme =
+    GoogleFonts.ibmPlexSansTextTheme;
+
 ThemeData get darkPurpleTheme {
   return _customThemeBuilder(
     cardColor: const Color(0xFF180D2F),
@@ -45,7 +52,7 @@ ThemeData _customThemeBuilder({
     baseTheme = ThemeData.light();
   }
   return ThemeData(
-    textTheme: GoogleFonts.ibmPlexSansTextTheme(baseTheme.textTheme),
+    textTheme: appTextTheme(baseTheme.textTheme),
     brightness: brightness,
     primarySwatch: primarySwatch,
     cardColor: cardColor,
