@@ -140,6 +140,16 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
+      # SignTool rejects the committed SIDEKICK-CERT.pfx, so dev builds are signed
+      # with a throwaway self-signed certificate generated for each run.
+      - name: Create dev signing certificate
+        run: |
+          $password = [guid]::NewGuid().ToString()
+          echo "::add-mask::$password"
+          echo "DEV_CERT_PASS=$password" >> $env:GITHUB_ENV
+          $cert = New-SelfSignedCertificate -Type CodeSigningCert -Subject "CN=Sidekick Contributors" -CertStoreLocation Cert:\CurrentUser\My -NotAfter (Get-Date).AddDays(7)
+          Export-PfxCertificate -Cert $cert -FilePath windows\dev-cert.pfx -Password (ConvertTo-SecureString -String $password -Force -AsPlainText)
+
       - name: Write MSIX
         uses: DamianReeves/write-file-action@v1.0
         with:
@@ -153,8 +163,8 @@ jobs:
               logo_path: assets\promo-windows\icon.png
               architecture: x64
               capabilities: "internetClient,removableStorage"
-              certificate_path: windows\SIDEKICK-CERT.pfx
-              certificate_password: ${{ secrets.WIN_CERT_PASS }}
+              certificate_path: windows\dev-cert.pfx
+              certificate_password: ${{ env.DEV_CERT_PASS }}
               install_certificate: false
               build_windows: false
               store: false
