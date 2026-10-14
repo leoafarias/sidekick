@@ -3,6 +3,9 @@ name: Build (Linux, Mac OS, Windows)
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   build-linux:
