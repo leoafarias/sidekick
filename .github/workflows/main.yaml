@@ -3,6 +3,9 @@ name: Build (Linux, Mac OS, Windows)
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   build-linux:
@@ -140,6 +143,25 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
+      # Dev builds are signed with a long-lived self-signed certificate
+      # (public part: windows/sidekick-dev.cer) so testers only trust it once.
+      # Fork PRs can't read secrets, so they fall back to a throwaway one.
+      - name: Create dev signing certificate
+        env:
+          WIN_DEV_CERT_PFX: ${{ secrets.WIN_DEV_CERT_PFX }}
+          WIN_DEV_CERT_PASS: ${{ secrets.WIN_DEV_CERT_PASS }}
+        run: |
+          if ($env:WIN_DEV_CERT_PFX) {
+            [IO.File]::WriteAllBytes("windows\dev-cert.pfx", [Convert]::FromBase64String($env:WIN_DEV_CERT_PFX))
+            $password = $env:WIN_DEV_CERT_PASS
+          } else {
+            $password = [guid]::NewGuid().ToString()
+            $cert = New-SelfSignedCertificate -Type CodeSigningCert -Subject "CN=Sidekick Contributors" -CertStoreLocation Cert:\CurrentUser\My -NotAfter (Get-Date).AddDays(7)
+            Export-PfxCertificate -Cert $cert -FilePath windows\dev-cert.pfx -Password (ConvertTo-SecureString -String $password -Force -AsPlainText)
+          }
+          echo "::add-mask::$password"
+          echo "DEV_CERT_PASS=$password" >> $env:GITHUB_ENV
+
       - name: Write MSIX
         uses: DamianReeves/write-file-action@v1.0
         with:
@@ -153,8 +175,9 @@ jobs:
               logo_path: assets\promo-windows\icon.png
               architecture: x64
               capabilities: "internetClient,removableStorage"
-              certificate_path: windows\SIDEKICK-CERT.pfx
-              certificate_password: ${{ secrets.WIN_CERT_PASS }}
+              certificate_path: windows\dev-cert.pfx
+              certificate_password: ${{ env.DEV_CERT_PASS }}
+              signtool_options: "/v /td SHA256"
               install_certificate: false
               build_windows: false
               store: false
@@ -182,7 +205,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sidekick-windows-dev.msix
-          path: build/windows/x64/runner/Release/sidekick.msix
+          path: |
+            build/windows/x64/runner/Release/sidekick.msix
+            windows/sidekick-dev.cer
 
       - name: Upload Build Zip
         uses: actions/upload-artifact@v4
