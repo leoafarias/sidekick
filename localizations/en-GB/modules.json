@@ -73,8 +73,12 @@
       "noIdesFound": "No supported IDEs found",
       "selectAFlutterSdkVersion": "select a Flutter SDK version",
       "noFlutterProjectsHaveBeenAddedYet": "No Flutter projects have been added yet.",
-      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Add your Flutter project The project information will be displayed here."
-    }
+      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Add your Flutter project The project information will be displayed here.",
+      "folderNotFound": "Project folder not found",
+      "pubspecNotFound": "pubspec.yaml not found"
+    },
+    "projectAlreadyAdded": "This project has already been added",
+    "couldNotReadProject": "Could not read project: {{error}}"
   },
   "pubPackages": {
     "trending": "Popular",

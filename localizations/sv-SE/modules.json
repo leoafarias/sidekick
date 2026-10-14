@@ -73,8 +73,12 @@
       "noIdesFound": "Inga IDE:er som stöds hittades",
       "selectAFlutterSdkVersion": "välj en Flutter SDK version",
       "noFlutterProjectsHaveBeenAddedYet": "Inga Flutter-projekt har ännu lagts till.",
-      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Lägg till ditt Flutter-projekt, projekt-informationen kommer visas här."
-    }
+      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Lägg till ditt Flutter-projekt, projekt-informationen kommer visas här.",
+      "folderNotFound": "Projektmappen hittades inte",
+      "pubspecNotFound": "pubspec.yaml hittades inte"
+    },
+    "projectAlreadyAdded": "Det här projektet har redan lagts till",
+    "couldNotReadProject": "Kunde inte läsa projektet: {{error}}"
   },
   "pubPackages": {
     "trending": "Populära",

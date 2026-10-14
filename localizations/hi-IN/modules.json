@@ -73,8 +73,12 @@
       "noIdesFound": "कोई समर्थित IDE नहीं मिला",
       "selectAFlutterSdkVersion": "एक Flutter SDK संस्करण चुनें",
       "noFlutterProjectsHaveBeenAddedYet": "कोई Flutter प्रोजेक्ट अभी तक जोड़ा नहीं गया है",
-      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere":"अपने Flutter प्रोजेक्ट जोड़ें प्रोजेक्ट जानकारी यहां प्रदर्शित की जाएगी"
-    }
+      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere":"अपने Flutter प्रोजेक्ट जोड़ें प्रोजेक्ट जानकारी यहां प्रदर्शित की जाएगी",
+      "folderNotFound": "प्रोजेक्ट फ़ोल्डर नहीं मिला",
+      "pubspecNotFound": "pubspec.yaml नहीं मिला"
+    },
+    "projectAlreadyAdded": "यह प्रोजेक्ट पहले से जोड़ा जा चुका है",
+    "couldNotReadProject": "प्रोजेक्ट पढ़ा नहीं जा सका: {{error}}"
   },
   "pubPackages": {
     "trending": "लोकप्रिय",

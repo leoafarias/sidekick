@@ -73,8 +73,12 @@
       "noIdesFound": "Қўллаб-қувватланадиган БРМ(IDE) топилмади",
       "selectAFlutterSdkVersion": "Бирорта Flutter SDK версиясни танланг",
       "noFlutterProjectsHaveBeenAddedYet": "Ҳали бирорта ҳам Flutter лойихаси қўшилмаган.",
-      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Flutter лойихангизни қўшинг. Лойиҳа маълумотлари шу ерда кўрсатилади."
-    }
+      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Flutter лойихангизни қўшинг. Лойиҳа маълумотлари шу ерда кўрсатилади.",
+      "folderNotFound": "Лойиҳа папкаси топилмади",
+      "pubspecNotFound": "pubspec.yaml топилмади"
+    },
+    "projectAlreadyAdded": "Бу лойиҳа аллақачон қўшилган",
+    "couldNotReadProject": "Лойиҳани ўқиб бўлмади: {{error}}"
   },
   "pubPackages": {
     "trending": "Машҳур",

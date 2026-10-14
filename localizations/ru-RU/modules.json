@@ -73,8 +73,12 @@
       "noIdesFound": "Поддерживаемые IDE не найдены",
       "selectAFlutterSdkVersion": "выберите версию Flutter SDK",
       "noFlutterProjectsHaveBeenAddedYet": "Проект Flutter еще не добавлен.",
-      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Добавьте свой проект Flutter. Здесь будет отображаться информация о проекте."
-    }
+      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Добавьте свой проект Flutter. Здесь будет отображаться информация о проекте.",
+      "folderNotFound": "Папка проекта не найдена",
+      "pubspecNotFound": "pubspec.yaml не найден"
+    },
+    "projectAlreadyAdded": "Этот проект уже добавлен",
+    "couldNotReadProject": "Не удалось прочитать проект: {{error}}"
   },
   "pubPackages": {
     "trending": "Популярный",

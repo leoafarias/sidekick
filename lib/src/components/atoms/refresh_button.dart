@@ -18,9 +18,18 @@ class RefreshButton extends HookWidget {
   Widget build(BuildContext context) {
     final refreshing = useState(false);
     Future<void> handleOnPress() async {
+      if (refreshing.value) return;
       refreshing.value = true;
-      await onPressed();
-      refreshing.value = false;
+      try {
+        await onPressed();
+      } catch (error, stackTrace) {
+        FlutterError.reportError(
+          FlutterErrorDetails(exception: error, stack: stackTrace),
+        );
+      } finally {
+        // Errors must not leave the button spinning forever
+        if (context.mounted) refreshing.value = false;
+      }
     }
 
     // Renders the refreshing indicator

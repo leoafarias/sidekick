@@ -73,8 +73,12 @@
       "noIdesFound": "Tidak ada IDE yang didukung ditemukan",
       "selectAFlutterSdkVersion": "Pilih versi Flutter SDK",
       "noFlutterProjectsHaveBeenAddedYet": "Belum ada proyek Flutter yang ditambahkan.",
-      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Tambahkan proyek Flutter Anda dan informasi proyek akan ditampilkan di sini."
-    }
+      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Tambahkan proyek Flutter Anda dan informasi proyek akan ditampilkan di sini.",
+      "folderNotFound": "Folder proyek tidak ditemukan",
+      "pubspecNotFound": "pubspec.yaml tidak ditemukan"
+    },
+    "projectAlreadyAdded": "Proyek ini sudah ditambahkan",
+    "couldNotReadProject": "Tidak dapat membaca proyek: {{error}}"
   },
   "pubPackages": {
     "trending": "Populer",

@@ -73,8 +73,12 @@
       "noIdesFound": "未找到受支持的 IDE",
       "selectAFlutterSdkVersion": "选择一个 Flutter SDK 版本",
       "noFlutterProjectsHaveBeenAddedYet": "目前还没有添加任何 Flutter 项目。",
-      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "添加您的 Flutter 项目，项目信息将显示在这里。"
-    }
+      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "添加您的 Flutter 项目，项目信息将显示在这里。",
+      "folderNotFound": "未找到项目文件夹",
+      "pubspecNotFound": "未找到 pubspec.yaml"
+    },
+    "projectAlreadyAdded": "该项目已添加",
+    "couldNotReadProject": "无法读取项目：{{error}}"
   },
   "pubPackages": {
     "trending": "热门",

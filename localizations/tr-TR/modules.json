@@ -73,8 +73,12 @@
       "noIdesFound": "Desteklenen IDE bulunamadı",
       "selectAFlutterSdkVersion": "Flutter SDK sürümü seç",
       "noFlutterProjectsHaveBeenAddedYet": "Henüz Flutter projesi eklenmedi.",
-      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Flutter projesini ekleyin. Proje bilgileri burada görüntülenecektir."
-    }
+      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Flutter projesini ekleyin. Proje bilgileri burada görüntülenecektir.",
+      "folderNotFound": "Proje klasörü bulunamadı",
+      "pubspecNotFound": "pubspec.yaml bulunamadı"
+    },
+    "projectAlreadyAdded": "Bu proje zaten eklendi",
+    "couldNotReadProject": "Proje okunamadı: {{error}}"
   },
   "pubPackages": {
     "trending": "Popüler",

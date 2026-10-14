@@ -73,8 +73,12 @@
       "noIdesFound": "対応しているIDEが見つかりません",
       "selectAFlutterSdkVersion": "Flutter SDKのバージョンを選択",
       "noFlutterProjectsHaveBeenAddedYet": "まだFlutterプロジェクトが追加されていません",
-      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Flutterプロジェクトを追加するとプロジェクトの情報がここに表示されます。"
-    }
+      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Flutterプロジェクトを追加するとプロジェクトの情報がここに表示されます。",
+      "folderNotFound": "プロジェクトフォルダが見つかりません",
+      "pubspecNotFound": "pubspec.yaml が見つかりません"
+    },
+    "projectAlreadyAdded": "このプロジェクトはすでに追加されています",
+    "couldNotReadProject": "プロジェクトを読み込めませんでした: {{error}}"
   },
   "pubPackages": {
     "trending": "人気",

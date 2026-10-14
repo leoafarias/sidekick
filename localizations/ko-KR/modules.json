@@ -73,8 +73,12 @@
       "noIdesFound": "지원되는 IDE를 찾을 수 없습니다",
       "selectAFlutterSdkVersion": "플러터 SDK 버전 선택하기",
       "noFlutterProjectsHaveBeenAddedYet": "아직 추가된 플러터 프로젝트가 없습니다..",
-      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "플러터 프로젝트를 추가해주세요. 추가한 프로젝트는 여기에 표시됩니다."
-    }
+      "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "플러터 프로젝트를 추가해주세요. 추가한 프로젝트는 여기에 표시됩니다.",
+      "folderNotFound": "프로젝트 폴더를 찾을 수 없습니다",
+      "pubspecNotFound": "pubspec.yaml을 찾을 수 없습니다"
+    },
+    "projectAlreadyAdded": "이미 추가된 프로젝트입니다",
+    "couldNotReadProject": "프로젝트를 읽을 수 없습니다: {{error}}"
   },
   "pubPackages": {
     "trending": "인기",
