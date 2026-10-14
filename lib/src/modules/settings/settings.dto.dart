@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:i18next/i18next.dart';
 import 'package:sidekick/i18n/language_manager.dart';
 
+import '../ide/ide_launcher.dart';
 import 'settings.utils.dart';
 
 /// All Settings
@@ -83,7 +84,8 @@ class SidekickSettings {
       skipSetup: json['skipSetup'] as bool? ?? false,
       themeMode: json['themeMode'] as String? ?? SettingsThemeMode.system,
       locale: locale,
-      ide: json['ide'],
+      // Older versions stored the `SupportedIDE` enum name, or 'none'
+      ide: migrateIdeId(json['ide'] as String?),
       customIdeLocation: json['customIdeLocation'],
     );
   }

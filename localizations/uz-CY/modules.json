@@ -68,6 +68,9 @@
       "remove": "Ўчириш",
       "openTerminalPlayground": "Терминал майдончасини очиш",
       "openIde": "{{ideName}}да очиш",
+      "openIn": "Қуйидагида очиш...",
+      "couldNotOpenIde": "Лойиҳани {{ideName}}да очиб бўлмади",
+      "noIdesFound": "Қўллаб-қувватланадиган БРМ(IDE) топилмади",
       "selectAFlutterSdkVersion": "Бирорта Flutter SDK версиясни танланг",
       "noFlutterProjectsHaveBeenAddedYet": "Ҳали бирорта ҳам Flutter лойихаси қўшилмаган.",
       "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Flutter лойихангизни қўшинг. Лойиҳа маълумотлари шу ерда кўрсатилади."
@@ -154,7 +157,13 @@
       "resetToDefaultSettings": "Асл созламалар ҳолатига тиклаш",
       "reset": "Тиклаш",
       "ideSelection": "БРМ(IDE)",
-      "whatIdeDoYouWantToOpenYourProjectsWith": "Лойихаларингизни очиш учун БРМ(IDE)ни танланг"
+      "whatIdeDoYouWantToOpenYourProjectsWith": "Лойихаларингизни очиш учун БРМ(IDE)ни танланг",
+      "ideNone": "Йўқ",
+      "ideCustom": "Бошқа дастур",
+      "ideNotFound": "{{ideName}} (топилмади)",
+      "ideNotFoundDescription": "{{ideName}} бу компьютерда топилмади. Бошқа БРМ(IDE)ни танланг.",
+      "detectIdesAgain": "Ўрнатилган БРМ(IDE)ларни қайта аниқлаш",
+      "detectingIdes": "Ўрнатилган БРМ(IDE)лар аниқланмоқда..."
     },
     "updater": {
       "components": {

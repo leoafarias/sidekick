@@ -68,6 +68,9 @@
       "remove": "삭제",
       "openTerminalPlayground": "터미널 열기",
       "openIde": "{{ideName}}에서 열기",
+      "openIn": "다음에서 열기...",
+      "couldNotOpenIde": "{{ideName}}에서 프로젝트를 열 수 없습니다",
+      "noIdesFound": "지원되는 IDE를 찾을 수 없습니다",
       "selectAFlutterSdkVersion": "플러터 SDK 버전 선택하기",
       "noFlutterProjectsHaveBeenAddedYet": "아직 추가된 플러터 프로젝트가 없습니다..",
       "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "플러터 프로젝트를 추가해주세요. 추가한 프로젝트는 여기에 표시됩니다."
@@ -154,7 +157,13 @@
       "resetToDefaultSettings": "최초 설정값으로 되돌리기",
       "reset": "초기화",
       "ideSelection": "IDE",
-      "whatIdeDoYouWantToOpenYourProjectsWith": "프로젝트를 열 IDE를 선택해주세요"
+      "whatIdeDoYouWantToOpenYourProjectsWith": "프로젝트를 열 IDE를 선택해주세요",
+      "ideNone": "없음",
+      "ideCustom": "사용자 지정 애플리케이션",
+      "ideNotFound": "{{ideName}} (찾을 수 없음)",
+      "ideNotFoundDescription": "이 컴퓨터에서 {{ideName}}을(를) 찾을 수 없습니다. 다른 IDE를 선택하세요.",
+      "detectIdesAgain": "설치된 IDE 다시 감지",
+      "detectingIdes": "설치된 IDE를 감지하는 중..."
     }
   },
   "updater": {

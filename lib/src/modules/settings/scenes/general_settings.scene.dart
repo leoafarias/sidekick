@@ -1,9 +1,9 @@
-import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:sidekick/i18n/language_manager.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 
 import '../../../modules/common/utils/notify.dart';
+import '../../ide/components/ide_selection_tile.dart';
 import '../../../version.dart';
 import '../settings.dto.dart';
 import '../settings.utils.dart';
@@ -103,52 +103,7 @@ class SettingsSectionGeneral extends StatelessWidget {
             ),
           ),
           const Divider(),
-          ListTile(
-            title: Text(
-              context.i18n('modules:settings.scenes.ideSelection'),
-            ),
-            subtitle: Text(
-              context.i18n(
-                  'modules:settings.scenes.whatIdeDoYouWantToOpenYourProjectsWith'),
-            ),
-            trailing: DropdownButton(
-              underline: Container(),
-              isDense: true,
-              value: settings.sidekick.ide ?? 'none',
-              items: [
-                const DropdownMenuItem(
-                  value: 'none',
-                  child: Text('None'),
-                ),
-                ...supportedIDEs
-                    .map((e) => DropdownMenuItem(
-                          value: e.name,
-                          child: Row(
-                            children: [
-                              e.icon,
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(e.name),
-                            ],
-                          ),
-                        ))
-
-              ],
-              onChanged: (val) async {
-                if (val == "Custom") {
-                  final file = await openFile();
-                  if (file != null) {
-                    settings.sidekick.customIdeLocation = file.path;
-                  } else {
-                    return;
-                  }
-                }
-                settings.sidekick.ide = val == 'none' ? null : val as String;
-                onSave();
-              },
-            ),
-          ),
+          IdeSelectionTile(settings, onSave),
           const Divider(),
           ListTile(
             title: Text(context.i18n('modules:settings.scenes.language')),

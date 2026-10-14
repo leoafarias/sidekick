@@ -68,6 +68,9 @@
       "remove": "Hapus",
       "openTerminalPlayground": "Buka Terminal Playground",
       "openIde": "Buka di {{ideName}}",
+      "openIn": "Buka di...",
+      "couldNotOpenIde": "Tidak dapat membuka proyek di {{ideName}}",
+      "noIdesFound": "Tidak ada IDE yang didukung ditemukan",
       "selectAFlutterSdkVersion": "Pilih versi Flutter SDK",
       "noFlutterProjectsHaveBeenAddedYet": "Belum ada proyek Flutter yang ditambahkan.",
       "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Tambahkan proyek Flutter Anda dan informasi proyek akan ditampilkan di sini."
@@ -154,7 +157,13 @@
       "resetToDefaultSettings": "Me-reset ke pengaturan default",
       "reset": "Me-reset",
       "ideSelection": "IDE",
-      "whatIdeDoYouWantToOpenYourProjectsWith": "Pilih IDE yang ingin Anda buka untuk projek Anda"
+      "whatIdeDoYouWantToOpenYourProjectsWith": "Pilih IDE yang ingin Anda buka untuk projek Anda",
+      "ideNone": "Tidak ada",
+      "ideCustom": "Aplikasi khusus",
+      "ideNotFound": "{{ideName}} (tidak ditemukan)",
+      "ideNotFoundDescription": "{{ideName}} tidak ditemukan di komputer ini. Pilih IDE lain.",
+      "detectIdesAgain": "Deteksi ulang IDE yang terpasang",
+      "detectingIdes": "Mendeteksi IDE yang terpasang..."
     }
   },
   "updater": {

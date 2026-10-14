@@ -68,6 +68,9 @@
       "remove": "O'chirish",
       "openTerminalPlayground": "Terminal maydonchasini ochish",
       "openIde": "{{ideName}}da ochish",
+      "openIn": "Quyidagida ochish...",
+      "couldNotOpenIde": "Loyihani {{ideName}}da ochib bo'lmadi",
+      "noIdesFound": "Qo'llab-quvvatlanadigan BRM(IDE) topilmadi",
       "selectAFlutterSdkVersion": "Birorta Flutter SDK versiyasni tanlang",
       "noFlutterProjectsHaveBeenAddedYet": "Hali birorta ham Flutter loyihasi qo'shilmagan.",
       "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Flutter loyihangizni qo'shing. Loyiha ma'lumotlari shu yerda ko'rsatiladi."
@@ -154,7 +157,13 @@
       "resetToDefaultSettings": "Asl sozlamalar holatiga tiklash",
       "reset": "Tiklash",
       "ideSelection": "BRM(IDE)",
-      "whatIdeDoYouWantToOpenYourProjectsWith": "Loyihalaringizni ochish uchun BRM(IDE)ni tanlang"
+      "whatIdeDoYouWantToOpenYourProjectsWith": "Loyihalaringizni ochish uchun BRM(IDE)ni tanlang",
+      "ideNone": "Yo'q",
+      "ideCustom": "Boshqa dastur",
+      "ideNotFound": "{{ideName}} (topilmadi)",
+      "ideNotFoundDescription": "{{ideName}} bu kompyuterda topilmadi. Boshqa BRM(IDE)ni tanlang.",
+      "detectIdesAgain": "O'rnatilgan BRM(IDE)larni qayta aniqlash",
+      "detectingIdes": "O'rnatilgan BRM(IDE)lar aniqlanmoqda..."
     }
   },
   "updater": {

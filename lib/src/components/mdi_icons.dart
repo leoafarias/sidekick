@@ -20,13 +20,43 @@ abstract final class MdiIcons {
     fontFamily: 'Material Design Icons',
     fontPackage: 'material_design_icons_flutter',
   );
+  static const IconData alphaIBox = IconData(
+    0xf0b10,
+    fontFamily: 'Material Design Icons',
+    fontPackage: 'material_design_icons_flutter',
+  );
   static const IconData alphaPBox = IconData(
     0xf0b17,
     fontFamily: 'Material Design Icons',
     fontPackage: 'material_design_icons_flutter',
   );
+  static const IconData alphaPCircle = IconData(
+    0xf0c19,
+    fontFamily: 'Material Design Icons',
+    fontPackage: 'material_design_icons_flutter',
+  );
   static const IconData alphaRCircle = IconData(
     0xf0c1f,
+    fontFamily: 'Material Design Icons',
+    fontPackage: 'material_design_icons_flutter',
+  );
+  static const IconData alphaSBox = IconData(
+    0xf0b1a,
+    fontFamily: 'Material Design Icons',
+    fontPackage: 'material_design_icons_flutter',
+  );
+  static const IconData alphaTBox = IconData(
+    0xf0b1b,
+    fontFamily: 'Material Design Icons',
+    fontPackage: 'material_design_icons_flutter',
+  );
+  static const IconData alphaZBox = IconData(
+    0xf0b21,
+    fontFamily: 'Material Design Icons',
+    fontPackage: 'material_design_icons_flutter',
+  );
+  static const IconData androidStudio = IconData(
+    0xf0034,
     fontFamily: 'Material Design Icons',
     fontPackage: 'material_design_icons_flutter',
   );
@@ -37,6 +67,11 @@ abstract final class MdiIcons {
   );
   static const IconData arrowRight = IconData(
     0xf0054,
+    fontFamily: 'Material Design Icons',
+    fontPackage: 'material_design_icons_flutter',
+  );
+  static const IconData asterisk = IconData(
+    0xf06c4,
     fontFamily: 'Material Design Icons',
     fontPackage: 'material_design_icons_flutter',
   );
@@ -80,6 +115,11 @@ abstract final class MdiIcons {
     fontFamily: 'Material Design Icons',
     fontPackage: 'material_design_icons_flutter',
   );
+  static const IconData cursorDefaultOutline = IconData(
+    0xf01bf,
+    fontFamily: 'Material Design Icons',
+    fontPackage: 'material_design_icons_flutter',
+  );
   static const IconData delete = IconData(
     0xf01b4,
     fontFamily: 'Material Design Icons',
@@ -102,6 +142,11 @@ abstract final class MdiIcons {
   );
   static const IconData folderMultiple = IconData(
     0xf0253,
+    fontFamily: 'Material Design Icons',
+    fontPackage: 'material_design_icons_flutter',
+  );
+  static const IconData hammerWrench = IconData(
+    0xf1323,
     fontFamily: 'Material Design Icons',
     fontPackage: 'material_design_icons_flutter',
   );
@@ -135,6 +180,11 @@ abstract final class MdiIcons {
     fontFamily: 'Material Design Icons',
     fontPackage: 'material_design_icons_flutter',
   );
+  static const IconData orbit = IconData(
+    0xf0018,
+    fontFamily: 'Material Design Icons',
+    fontPackage: 'material_design_icons_flutter',
+  );
   static const IconData playBox = IconData(
     0xf127a,
     fontFamily: 'Material Design Icons',
@@ -150,6 +200,11 @@ abstract final class MdiIcons {
     fontFamily: 'Material Design Icons',
     fontPackage: 'material_design_icons_flutter',
   );
+  static const IconData robotOutline = IconData(
+    0xf167a,
+    fontFamily: 'Material Design Icons',
+    fontPackage: 'material_design_icons_flutter',
+  );
   static const IconData triangle = IconData(
     0xf0536,
     fontFamily: 'Material Design Icons',
@@ -162,6 +217,11 @@ abstract final class MdiIcons {
   );
   static const IconData update = IconData(
     0xf06b0,
+    fontFamily: 'Material Design Icons',
+    fontPackage: 'material_design_icons_flutter',
+  );
+  static const IconData weatherWindy = IconData(
+    0xf059d,
     fontFamily: 'Material Design Icons',
     fontPackage: 'material_design_icons_flutter',
   );

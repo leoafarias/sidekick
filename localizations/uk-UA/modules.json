@@ -68,6 +68,9 @@
       "remove": "Видалити",
       "openTerminalPlayground": "Відкритий термінал Playground",
       "openIde": "Відкрити в {{ideName}}",
+      "openIn": "Відкрити в...",
+      "couldNotOpenIde": "Не вдалося відкрити проєкт у {{ideName}}",
+      "noIdesFound": "Підтримувані IDE не знайдено",
       "selectAFlutterSdkVersion": "виберіть версію Flutter SDK",
       "noFlutterProjectsHaveBeenAddedYet": "Жодного проекту Flutter ще не додано.",
       "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Додайте свій проект Flutter. Тут буде відображатися інформація про проект."
@@ -154,7 +157,13 @@
       "resetToDefaultSettings": "Скинути налаштування за замовчуванням",
       "reset": "Скинути",
       "ideSelection": "IDE",
-      "whatIdeDoYouWantToOpenYourProjectsWith": "Виберіть IDE, щоб відкрити свої проекти"
+      "whatIdeDoYouWantToOpenYourProjectsWith": "Виберіть IDE, щоб відкрити свої проекти",
+      "ideNone": "Немає",
+      "ideCustom": "Інша програма",
+      "ideNotFound": "{{ideName}} (не знайдено)",
+      "ideNotFoundDescription": "{{ideName}} не знайдено на цьому комп'ютері. Виберіть іншу IDE.",
+      "detectIdesAgain": "Знову знайти встановлені IDE",
+      "detectingIdes": "Пошук встановлених IDE..."
     }
   },
   "updater": {

@@ -68,6 +68,9 @@
       "remove": "মুছুন",
       "openTerminalPlayground": "টার্মিনাল প্লেগ্রাউন্ড খুলুন",
       "openIde": "{{ideName}}-এ খুলুন",
+      "openIn": "এতে খুলুন...",
+      "couldNotOpenIde": "{{ideName}}-এ প্রজেক্ট খোলা যায়নি",
+      "noIdesFound": "কোনো সমর্থিত IDE পাওয়া যায়নি",
       "selectAFlutterSdkVersion": "Flutter SDK ভার্সন নির্বাচন করুন",
       "noFlutterProjectsHaveBeenAddedYet": "কোন Flutter প্রজেক্ট এখনো যোগ করা হয়নি।",
       "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "আপনার Flutter প্রজেক্ট যোগ করুন প্রজেক্টের তথ্য এখানে প্রদর্শিত হবে।"
@@ -154,7 +157,13 @@
       "resetToDefaultSettings": "ডিফল্ট সেটিংসে রিসেট করুন",
       "reset": "রিসেট করুন",
       "ideSelection": "IDE",
-      "whatIdeDoYouWantToOpenYourProjectsWith": "আপনার প্রজেক্ট খুলতে IDE নির্বাচন করুন"
+      "whatIdeDoYouWantToOpenYourProjectsWith": "আপনার প্রজেক্ট খুলতে IDE নির্বাচন করুন",
+      "ideNone": "কোনোটি নয়",
+      "ideCustom": "কাস্টম অ্যাপ্লিকেশন",
+      "ideNotFound": "{{ideName}} (পাওয়া যায়নি)",
+      "ideNotFoundDescription": "এই কম্পিউটারে {{ideName}} পাওয়া যায়নি। অন্য একটি IDE নির্বাচন করুন।",
+      "detectIdesAgain": "ইনস্টল করা IDE আবার শনাক্ত করুন",
+      "detectingIdes": "ইনস্টল করা IDE শনাক্ত করা হচ্ছে..."
     }
   },
   "updater": {

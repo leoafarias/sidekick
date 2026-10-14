@@ -68,6 +68,9 @@
       "remove": "删除",
       "openTerminalPlayground": "打开 Terminal Playground",
       "openIde": "在 {{ideName}} 中打开",
+      "openIn": "打开方式...",
+      "couldNotOpenIde": "无法在 {{ideName}} 中打开项目",
+      "noIdesFound": "未找到受支持的 IDE",
       "selectAFlutterSdkVersion": "选择一个 Flutter SDK 版本",
       "noFlutterProjectsHaveBeenAddedYet": "目前还没有添加任何 Flutter 项目。",
       "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "添加您的 Flutter 项目，项目信息将显示在这里。"
@@ -154,7 +157,13 @@
       "resetToDefaultSettings": "恢复默认设置",
       "reset": "重置",
       "ideSelection": "IDE",
-      "whatIdeDoYouWantToOpenYourProjectsWith": "选择打开项目时使用的 IDE"
+      "whatIdeDoYouWantToOpenYourProjectsWith": "选择打开项目时使用的 IDE",
+      "ideNone": "无",
+      "ideCustom": "自定义应用程序",
+      "ideNotFound": "{{ideName}}（未找到）",
+      "ideNotFoundDescription": "在此电脑上未找到 {{ideName}}。请选择其他 IDE。",
+      "detectIdesAgain": "重新检测已安装的 IDE",
+      "detectingIdes": "正在检测已安装的 IDE..."
     }
   },
   "updater": {

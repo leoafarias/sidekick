@@ -68,6 +68,9 @@
       "remove": "削除",
       "openTerminalPlayground": "Terminal Playgroundを開く",
       "openIde": "{{ideName}}で開く",
+      "openIn": "次で開く...",
+      "couldNotOpenIde": "{{ideName}}でプロジェクトを開けませんでした",
+      "noIdesFound": "対応しているIDEが見つかりません",
       "selectAFlutterSdkVersion": "Flutter SDKのバージョンを選択",
       "noFlutterProjectsHaveBeenAddedYet": "まだFlutterプロジェクトが追加されていません",
       "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Flutterプロジェクトを追加するとプロジェクトの情報がここに表示されます。"
@@ -154,7 +157,13 @@
       "resetToDefaultSettings": "デフォルト設定にリセット",
       "reset": "リセット",
       "ideSelection": "IDE",
-      "whatIdeDoYouWantToOpenYourProjectsWith": "プロジェクトを開くIDEを選択"
+      "whatIdeDoYouWantToOpenYourProjectsWith": "プロジェクトを開くIDEを選択",
+      "ideNone": "なし",
+      "ideCustom": "カスタムアプリケーション",
+      "ideNotFound": "{{ideName}}（見つかりません）",
+      "ideNotFoundDescription": "このコンピューターで{{ideName}}が見つかりませんでした。別のIDEを選択してください。",
+      "detectIdesAgain": "インストール済みのIDEを再検出",
+      "detectingIdes": "インストール済みのIDEを検出しています..."
     }
   },
   "updater": {
