@@ -257,7 +257,7 @@ jobs:
         uses: svenstaro/upload-release-action@2.2.1
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/windows/Runner/release/sidekick.msix
+          file: build/windows/x64/runner/Release/sidekick.msix
           asset_name: sidekick-windows-${{ github.event.release.tag_name }}-MS-NS.msix
           tag: ${{ github.ref }}
 
@@ -331,7 +331,7 @@ jobs:
         run: flutter pub run msix:publish
 
       - name: Compress artifacts
-        run: tar.exe -zcvf windows-${{ github.event.release.tag_name }}.zip build/windows/Runner/release
+        run: tar.exe -zcvf windows-${{ github.event.release.tag_name }}.zip build/windows/x64/runner/Release
 
       - name: Upload artifacts to release
         uses: svenstaro/upload-release-action@2.2.1
@@ -344,6 +344,6 @@ jobs:
         uses: svenstaro/upload-release-action@2.2.1
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/windows/Runner/release/sidekick.msix
+          file: build/windows/x64/runner/Release/sidekick.msix
           asset_name: sidekick-windows-${{ github.event.release.tag_name }}.msix
           tag: ${{ github.ref }}
