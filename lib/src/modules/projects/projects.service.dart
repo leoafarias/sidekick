@@ -43,6 +43,14 @@ class ProjectsService {
   /// Storage key used up to Sidekick 1.1.x, which keyed entries by path
   static const _legacyKey = 'projects_service_box';
 
+  /// Box recording that the legacy box was migrated
+  static const _metaKey = 'sidekick_projects_meta';
+  static const _migratedKey = 'legacyMigrated';
+
+  /// How long loading a single project may take before it is shown as
+  /// unreadable, for example on an unreachable network drive
+  static const loadTimeout = Duration(seconds: 10);
+
   static Box<ProjectRef>? _box;
 
   /// Storage box
@@ -67,19 +75,26 @@ class ProjectsService {
     _box = null;
   }
 
-  /// Moves projects from the legacy path-keyed box into the current box.
+  /// Copies projects from the legacy path-keyed box into the current box,
+  /// once.
   ///
-  /// If the legacy box can't be read (for example because it was corrupted
-  /// by an over-long key), it is left on disk untouched and the app starts
-  /// with the projects that could be recovered.
+  /// The legacy box is kept so older Sidekick versions still find their
+  /// projects; a marker prevents migrating again, which would bring back
+  /// projects removed since. If the legacy box can't be read (for example
+  /// because it was corrupted by an over-long key), it is left on disk
+  /// untouched and its projects are not recovered.
   static Future<void> _migrateLegacyBox() async {
     try {
-      if (!await Hive.boxExists(_legacyKey)) return;
-      final legacy = await _openBoxGuarded(_legacyKey);
-      for (final ref in legacy.values) {
-        await add(ref.path);
+      final meta = await Hive.openBox<bool>(_metaKey);
+      if (meta.get(_migratedKey) == true) return;
+      if (await Hive.boxExists(_legacyKey)) {
+        final legacy = await _openBoxGuarded(_legacyKey);
+        for (final ref in legacy.values) {
+          await add(ref.path);
+        }
+        await legacy.close();
       }
-      await legacy.deleteFromDisk();
+      await meta.put(_migratedKey, true);
     } catch (e, stackTrace) {
       debugPrint('Could not migrate saved projects: $e\n$stackTrace');
     }
@@ -177,13 +192,22 @@ class ProjectsService {
   /// Disk access runs in a background isolate: checking a folder on a
   /// disconnected network drive can block until the OS times out, which would
   /// otherwise freeze the app.
+  ///
+  /// Each project loads in its own isolate with a [loadTimeout], so a hung
+  /// folder only affects its own card.
   static Future<List<FlutterProject>> load() {
-    final paths = ProjectsService.paths;
-    return Isolate.run(() => paths.map(loadProject).toList());
+    return Future.wait(paths.map(loadProjectInBackground));
   }
 
   /// Loads a single project in a background isolate, see [load]
   static Future<FlutterProject> loadProjectInBackground(String path) {
-    return Isolate.run(() => loadProject(path));
+    return Isolate.run(() => loadProject(path)).timeout(
+      loadTimeout,
+      onTimeout: () => FlutterProject.unavailable(
+        path,
+        ProjectLoadError.unreadable,
+        details: 'Timed out after ${loadTimeout.inSeconds} s',
+      ),
+    );
   }
 }

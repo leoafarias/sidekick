@@ -58,6 +58,7 @@ class ProjectPackage {
     required this.source,
     this.constraint,
     this.resolved,
+    this.overridden = false,
   });
 
   /// Package name
@@ -75,6 +76,10 @@ class ProjectPackage {
   /// Version resolved in pubspec.lock
   final Version? resolved;
 
+  /// Whether `dependency_overrides` or pubspec_overrides.yaml overrides it,
+  /// so the resolved version doesn't have to match [constraint]
+  final bool overridden;
+
   /// Whether the latest version can be looked up on pub.dev
   bool get isOnPubDev => source == DependencySource.pubDev;
 
@@ -91,7 +96,9 @@ class ProjectPackage {
 
   /// Status compared to [latest]
   PackageStatus statusFor(Version? latest) {
-    if (latest == null || !isOnPubDev) return PackageStatus.unknown;
+    if (latest == null || !isOnPubDev || overridden) {
+      return PackageStatus.unknown;
+    }
     final current = resolved;
     // A pre-release newer than the latest stable is not outdated
     if (current != null && current >= latest) return PackageStatus.upToDate;
@@ -114,11 +121,22 @@ class ProjectPackage {
 }
 
 /// Reads the dependencies of a pubspec, with resolved versions from
-/// [lockYaml] when available
-List<ProjectPackage> readPackages(String pubspecYaml, String? lockYaml) {
+/// [lockYaml] when available.
+///
+/// Packages in `dependency_overrides`, or in [overridesYaml] (the content of
+/// pubspec_overrides.yaml), are marked as overridden.
+List<ProjectPackage> readPackages(
+  String pubspecYaml,
+  String? lockYaml, {
+  String? overridesYaml,
+}) {
   final pubspec = loadYaml(pubspecYaml);
   if (pubspec is! YamlMap) return const [];
   final resolved = _readLockVersions(lockYaml);
+  final overridden = {
+    ..._overriddenNames(pubspec),
+    if (overridesYaml != null) ..._overriddenNames(_tryLoadYaml(overridesYaml)),
+  };
 
   final packages = <ProjectPackage>[];
   for (final section in DependencySection.values) {
@@ -133,10 +151,25 @@ List<ProjectPackage> readPackages(String pubspecYaml, String? lockYaml) {
         source: source,
         constraint: constraint,
         resolved: resolved[name],
+        overridden: overridden.contains(name),
       ));
     }
   }
   return packages;
+}
+
+Set<String> _overriddenNames(Object? yaml) {
+  final overrides = yaml is YamlMap ? yaml['dependency_overrides'] : null;
+  if (overrides is! YamlMap) return const {};
+  return {for (final key in overrides.keys) key.toString()};
+}
+
+Object? _tryLoadYaml(String yaml) {
+  try {
+    return loadYaml(yaml);
+  } on YamlException {
+    return null;
+  }
 }
 
 (DependencySource, String?) _parseDependency(Object? value) {

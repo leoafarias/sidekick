@@ -109,9 +109,13 @@ Future<File?> _findAssetsLogo(String assetsPath) async {
     await for (final entity
         in directory.list(recursive: true, followLinks: false)) {
       if (++inspected > _maxAssetEntries) break;
-      if (entity is! File) continue;
+      final isFile = entity is File ||
+          (entity is Link && FileSystemEntity.isFileSync(entity.path));
+      if (!isFile) continue;
       final name = p.basename(entity.path).toLowerCase();
-      if (isPreviewableImage(name) && name.contains('logo')) logos.add(entity);
+      if (isPreviewableImage(name) && name.contains('logo')) {
+        logos.add(File(entity.path));
+      }
     }
   } on FileSystemException catch (e) {
     debugPrint('Could not list $assetsPath: $e');

@@ -202,7 +202,14 @@ void main() {
       await ProjectsService.init();
 
       expect(ProjectsService.paths, [a, b]);
-      expect(await Hive.boxExists('projects_service_box'), isFalse);
+      // Kept so older Sidekick versions still find their projects
+      expect(await Hive.boxExists('projects_service_box'), isTrue);
+
+      // Migrates only once: a project removed since doesn't come back
+      await ProjectsService.remove(a);
+      await ProjectsService.close();
+      await ProjectsService.init();
+      expect(ProjectsService.paths, [b]);
     });
 
     test('starts even if the legacy box is corrupted', () async {

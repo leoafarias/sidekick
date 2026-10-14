@@ -99,7 +99,14 @@ Future<ProjectDetails> loadProjectDetails(String path) async {
 
   final lockYaml =
       await lockFile.exists() ? await lockFile.readAsString() : null;
-  final packages = readPackages(pubspecYaml, lockYaml);
+  final overridesFile = File(p.join(path, 'pubspec_overrides.yaml'));
+  final overridesYaml = await overridesFile.exists()
+      ? await overridesFile.readAsString()
+      : null;
+  final packages =
+      readPackages(pubspecYaml, lockYaml, overridesYaml: overridesYaml);
+  // Workspace members are resolved in the workspace root's pubspec.lock
+  final isWorkspaceMember = pubspec['resolution'] == 'workspace';
 
   final environment = pubspec['environment'];
   final platforms = [
@@ -116,7 +123,8 @@ Future<ProjectDetails> loadProjectDetails(String path) async {
     packages: packages,
     platforms: platforms,
     assetRoots: assetRootFolders(path, pubspecYaml),
-    lockOutdated: lockYaml == null || !isLockInSync(packages),
+    lockOutdated:
+        !isWorkspaceMember && (lockYaml == null || !isLockInSync(packages)),
   );
 }
 
@@ -128,6 +136,7 @@ bool isLockInSync(List<ProjectPackage> packages) {
         package.source != DependencySource.customHosted) {
       continue;
     }
+    if (package.overridden) continue;
     final resolved = package.resolved;
     if (resolved == null) return false;
     final constraint = package.versionConstraint;

@@ -77,9 +77,11 @@ class ProjectsScreen extends HookConsumerWidget {
     final staleSelection = selectedPath != null && selected == null;
     useEffect(() {
       if (staleSelection) {
-        Future.microtask(
-          () => ref.read(selectedProjectProvider.notifier).state = null,
-        );
+        Future.microtask(() {
+          if (context.mounted) {
+            ref.read(selectedProjectProvider.notifier).state = null;
+          }
+        });
       }
       return null;
     }, [staleSelection]);

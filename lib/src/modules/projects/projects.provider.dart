@@ -54,11 +54,15 @@ class ProjectsStateNotifier extends StateNotifier<List<FlutterProject>> {
     load();
   }
 
+  // Incremented on every load, so a slow load can't overwrite a newer one
+  var _loadGeneration = 0;
+
   /// Reloads all projects from storage and disk
   Future<void> load() async {
+    final generation = ++_loadGeneration;
     try {
       final projects = await ProjectsService.load();
-      if (mounted) state = projects;
+      if (mounted && generation == _loadGeneration) state = projects;
     } catch (e, stackTrace) {
       debugPrint('Could not load projects: $e\n$stackTrace');
       notifyError(e.toString());
@@ -131,6 +135,7 @@ class ProjectsStateNotifier extends StateNotifier<List<FlutterProject>> {
   /// Removes a project
   Future<void> removeProject(String path) async {
     await ProjectsService.remove(path);
+    FlutterProject.clearIconCache(path);
     await load();
   }
 }

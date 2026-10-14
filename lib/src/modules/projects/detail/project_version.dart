@@ -20,24 +20,22 @@ enum VersionBump {
 /// Returns [version] bumped by [bump], or null if it can't be bumped
 /// (a build number that is not a single integer).
 ///
-/// Major, minor and patch bumps drop any pre-release and keep the build
-/// number: stores require the build number to grow on every upload, so it
-/// is bumped separately and never reset.
+/// Major, minor and patch bumps follow pub_semver: a pre-release bumps to
+/// the release it leads to (`2.0.0-dev.1` -> `2.0.0` for major). They keep
+/// the build number: stores require it to grow on every upload, so it is
+/// bumped separately and never reset.
 Version? bumpVersion(Version version, VersionBump bump) {
   final build = version.build.isEmpty ? null : version.build.join('.');
+  Version withBuild(Version next) =>
+      Version(next.major, next.minor, next.patch, build: build);
 
   switch (bump) {
     case VersionBump.major:
-      return Version(version.major + 1, 0, 0, build: build);
+      return withBuild(version.nextMajor);
     case VersionBump.minor:
-      return Version(version.major, version.minor + 1, 0, build: build);
+      return withBuild(version.nextMinor);
     case VersionBump.patch:
-      return Version(
-        version.major,
-        version.minor,
-        version.patch + 1,
-        build: build,
-      );
+      return withBuild(version.nextPatch);
     case VersionBump.build:
       final current = version.build;
       int next;

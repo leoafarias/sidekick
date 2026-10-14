@@ -165,4 +165,26 @@ dependencies:
         .replaceFirst('  path: ^1.8.0', '  path: ^1.8.0\n  collection: ^1.0.0');
     expect(isLockInSync(readPackages(added, pubspecLock)), isFalse);
   });
+
+  test('overridden packages are not checked against their constraint', () {
+    // The lock resolves http to 0.13.x, which ^1.2.0 doesn't allow
+    final changed = setDependencyConstraint(
+        flutterPubspec(), DependencySection.dependencies, 'http', '^1.2.0');
+
+    final inPubspec = readPackages(
+      '$changed\ndependency_overrides:\n  http: ^0.13.0\n',
+      pubspecLock,
+    );
+    expect(isLockInSync(inPubspec), isTrue);
+
+    final inOverridesFile = readPackages(
+      changed,
+      pubspecLock,
+      overridesYaml: 'dependency_overrides:\n  http: ^0.13.0\n',
+    );
+    expect(isLockInSync(inOverridesFile), isTrue);
+    final http = inOverridesFile.firstWhere((p) => p.name == 'http');
+    expect(http.overridden, isTrue);
+    expect(http.statusFor(Version(9, 0, 0)), PackageStatus.unknown);
+  });
 }

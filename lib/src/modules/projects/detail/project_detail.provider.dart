@@ -102,17 +102,27 @@ class ProjectEditor {
   }
 
   Future<void> _write(String path, String yaml) async {
-    // Write to a temp file and rename it over pubspec.yaml, so a failure
-    // mid-write (full disk, crash) can't leave the pubspec truncated
+    // Back up pubspec.yaml, then write it in place. Writing in place keeps
+    // symlinks, permissions and ownership, which renaming a temp file over
+    // it would replace, and fails on a read-only file. If the write fails,
+    // the backup is restored; if that fails too, it stays next to the
+    // pubspec for recovery.
     final pubspec = _pubspec(path);
-    final temp = File('${pubspec.path}.sidekick-tmp');
+    final backup = await pubspec.copy('${pubspec.path}.sidekick-backup');
     try {
-      await temp.writeAsString(yaml, flush: true);
-      await temp.rename(pubspec.path);
+      await pubspec.writeAsString(yaml, flush: true);
     } catch (_) {
-      if (await temp.exists()) await temp.delete();
+      var restored = false;
+      try {
+        await pubspec.writeAsBytes(await backup.readAsBytes(), flush: true);
+        restored = true;
+      } catch (_) {
+        // Keep the backup next to the pubspec
+      }
+      if (restored) await backup.delete();
       rethrow;
     }
+    await backup.delete();
     _ref.invalidate(projectDetailsProvider(path));
     await _ref.read(projectsProvider.notifier).reloadPath(path);
   }

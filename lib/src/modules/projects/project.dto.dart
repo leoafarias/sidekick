@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/widgets.dart';
 import 'package:fvm/fvm.dart';
 import 'package:hive/hive.dart';
@@ -72,12 +74,21 @@ class FlutterProject extends Project {
   // project, so the lookup doesn't scan each project again.
   static final _iconCache = <String, Widget>{};
 
+  // Image files of the cached icons, to evict them from Flutter's image
+  // cache, which is keyed by file path
+  static final _iconFiles = <String, File>{};
+
+  static const _iconCacheWidth = 128;
+
   /// Clears the cached icon of [path], or of every project
   static void clearIconCache([String? path]) {
-    if (path == null) {
-      _iconCache.clear();
-    } else {
+    final paths = path == null ? [..._iconCache.keys] : [path];
+    for (final path in paths) {
       _iconCache.remove(path);
+      final file = _iconFiles.remove(path);
+      if (file != null) {
+        ResizeImage(FileImage(file), width: _iconCacheWidth).evict();
+      }
     }
   }
 
@@ -93,11 +104,12 @@ class FlutterProject extends Project {
     final icon = file != null
         ? Image.file(
             file,
-            cacheWidth: 128,
+            cacheWidth: _iconCacheWidth,
             errorBuilder: (_, __, ___) => const FlutterLogo(),
           )
         : const FlutterLogo();
     _iconCache[path] = icon;
+    if (file != null) _iconFiles[path] = file;
     return icon;
   }
 }
