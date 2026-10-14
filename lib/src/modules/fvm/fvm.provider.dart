@@ -1,12 +1,12 @@
 // ignore_for_file: top_level_function_literal_block
 import 'dart:async';
-import 'dart:convert';
+import 'dart:io';
 
-import 'package:async/async.dart';
-import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/legacy.dart';
-import 'package:fvm/fvm.dart';
+import 'package:fvm/fvm.dart' hide getDirectorySize;
+// ignore: implementation_imports
+import 'package:fvm/src/services/logger_service.dart';
 import 'package:watcher/watcher.dart';
 
 import '../../modules/common/dto/release.dto.dart';
@@ -14,6 +14,45 @@ import '../../modules/common/utils/debounce.dart';
 import '../../modules/common/utils/dir_stat.dart';
 import '../projects/projects.provider.dart';
 import '../releases/releases.provider.dart';
+
+/// Lines logged by FVM, streamed to the console
+final _fvmOutput = StreamController<String>.broadcast();
+
+/// FVM logger that also forwards output to the Sidekick console
+class _ConsoleLogger extends Logger {
+  _ConsoleLogger(super.context);
+
+  @override
+  void info([String message = '']) {
+    super.info(message);
+    _fvmOutput.add('$message\n');
+  }
+
+  @override
+  void warn([String message = '']) {
+    super.warn(message);
+    _fvmOutput.add('$message\n');
+  }
+
+  @override
+  void err([String message = '']) {
+    super.err(message);
+    _fvmOutput.add('$message\n');
+  }
+
+  @override
+  void write(String message) {
+    super.write(message);
+    _fvmOutput.add(message);
+  }
+}
+
+/// FVM context shared by the app
+final fvmContext = FvmContext.create(
+  debugLabel: 'sidekick',
+  skipInput: true,
+  generatorsOverride: {Logger: _ConsoleLogger.new},
+);
 
 /// Cache provider
 final cacheSizeProvider =
@@ -24,7 +63,9 @@ final cacheSizeProvider =
 final unusedReleaseSizeProvider = FutureProvider((ref) {
   final unused = ref.watch(unusedVersionProvider);
   // Get all directories
-  final directories = unused.map((version) => version.cache?.dir);
+  final directories = unused.map(
+    (version) => version.cache == null ? null : Directory(version.cache!.directory),
+  );
   return getDirectoriesSize(directories.nonNulls);
 });
 
@@ -48,11 +89,11 @@ final unusedVersionProvider = Provider((ref) {
 
 /// Releases  InfoProvider
 final fvmCacheProvider =
-    StateNotifierProvider<FvmCacheProvider, List<CacheVersion>>((ref) {
+    StateNotifierProvider<FvmCacheProvider, List<CacheFlutterVersion>>((ref) {
   return FvmCacheProvider(ref: ref);
 });
 
-class FvmCacheProvider extends StateNotifier<List<CacheVersion>> {
+class FvmCacheProvider extends StateNotifier<List<CacheFlutterVersion>> {
   FvmCacheProvider({
     required this.ref,
   }) : super([]) {
@@ -60,7 +101,7 @@ class FvmCacheProvider extends StateNotifier<List<CacheVersion>> {
 
     // Load State again while listening to directory
     directoryWatcher = Watcher(
-      FVMClient.context.cacheDir.path,
+      fvmContext.versionsCachePath,
     ).events.listen((event) {
       if (event.type == ChangeType.ADD || event.type == ChangeType.REMOVE) {
         _debouncer.run(reloadState);
@@ -69,23 +110,23 @@ class FvmCacheProvider extends StateNotifier<List<CacheVersion>> {
   }
 
   final Ref ref;
-  List<CacheVersion> channels = [];
-  List<CacheVersion> versions = [];
-  List<CacheVersion> all = [];
+  List<CacheFlutterVersion> channels = [];
+  List<CacheFlutterVersion> versions = [];
+  List<CacheFlutterVersion> all = [];
   String lastChangeHash = '';
 
   late StreamSubscription<WatchEvent> directoryWatcher;
   final _debouncer = Debouncer(const Duration(seconds: 20));
 
   Future<void> _setTotalCacheSize() async {
-    final stat = await getDirectorySize(FVMClient.context.cacheDir);
+    final stat = await getDirectorySize(Directory(fvmContext.versionsCachePath));
     ref.read(cacheSizeProvider.notifier).state = stat;
   }
 
   Future<void> reloadState() async {
     // Cancel debounce to avoid running twice with no new state change
     _debouncer.cancel();
-    final localVersions = await FVMClient.getCachedVersions();
+    final localVersions = await fvmContext.get<CacheService>().getAllVersions();
     state = localVersions;
 
     channels = localVersions.where((item) => item.isChannel).toList();
@@ -94,22 +135,17 @@ class FvmCacheProvider extends StateNotifier<List<CacheVersion>> {
     await _setTotalCacheSize();
   }
 
-  CacheVersion? getChannel(String name) {
+  CacheFlutterVersion? getChannel(String name) {
     if (channels.isNotEmpty) {
-      return channels.firstWhereOrNull(
-        (c) => c.name == name,
-      );
+      return channels.where((c) => c.name == name).firstOrNull;
     } else {
       return null;
     }
   }
 
-  CacheVersion? getVersion(String name) {
+  CacheFlutterVersion? getVersion(String name) {
     if (versions.isNotEmpty) {
-      // ignore: avoid_function_literals_in_foreach_calls
-      return versions.firstWhereOrNull(
-        (v) => v.name == name,
-      );
+      return versions.where((v) => v.name == name).firstOrNull;
     } else {
       return null;
     }
@@ -122,16 +158,4 @@ class FvmCacheProvider extends StateNotifier<List<CacheVersion>> {
   }
 }
 
-final fvmStdoutProvider =
-    StreamGroup.mergeBroadcast(_getConsoleStreams()).transform(utf8.decoder);
-
-List<Stream<List<int>>> _getConsoleStreams() {
-  return [
-    FVMClient.console.stdout.stream,
-    FVMClient.console.stderr.stream,
-    FVMClient.console.warning.stream,
-    FVMClient.console.info.stream,
-    FVMClient.console.fine.stream,
-    FVMClient.console.error.stream,
-  ];
-}
+final fvmStdoutProvider = _fvmOutput.stream;

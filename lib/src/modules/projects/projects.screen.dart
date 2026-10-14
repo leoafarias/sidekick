@@ -113,7 +113,7 @@ class ProjectsScreen extends HookConsumerWidget {
                         child: ProjectListItem(
                           project,
                           versionSelect: true,
-                          key: Key(project.projectDir.path),
+                          key: Key(project.path),
                         ),
                       );
                     }).toList()),

@@ -10,7 +10,6 @@ import '../../modules/common/dto/master.dto.dart';
 import '../../modules/common/dto/release.dto.dart';
 import '../../modules/common/dto/version.dto.dart';
 import '../common/constants.dart';
-import '../common/utils/sdk_version.dart';
 import '../fvm/fvm.provider.dart';
 
 class AppReleasesState {
@@ -108,13 +107,13 @@ class AppReleasesState {
   }
 }
 
-final _fetchFlutterReleases = FutureProvider<FlutterReleases>(
-  (_) => FVMClient.getFlutterReleases(),
+final _fetchFlutterReleases = FutureProvider<FlutterReleasesResponse>(
+  (_) => fvmContext.get<FlutterReleaseClient>().fetchReleases(),
 );
 
 final releasesStateProvider = Provider<AppReleasesState>((ref) {
   // Filter only version that are valid releases
-  FlutterReleases? payload;
+  FlutterReleasesResponse? payload;
   ref.watch(_fetchFlutterReleases).whenData((value) => payload = value);
 
   // Watch this state change for refresh
@@ -128,25 +127,22 @@ final releasesStateProvider = Provider<AppReleasesState>((ref) {
     return releasesState;
   }
 
-  final flutterReleases = payload!.releases;
+  final flutterReleases = payload!.versions;
   final flutterChannels = payload!.channels;
 
   releasesState.fetching = false;
 
-  final globalVersion = FVMClient.getGlobalVersionSync();
+  final globalVersion = fvmContext.get<CacheService>().getGlobalVersion();
   releasesState.hasGlobal = globalVersion != null;
 
   //  MASTER: Set Master separetely because workflow is very different
   final masterCache = installedVersions.getChannel(kMasterChannel);
-  String? masterVersion;
-  if (masterCache != null) {
-    masterVersion = getSdkVersionSync(masterCache);
-  }
+  final masterVersion = masterCache?.flutterSdkVersion;
 
   releasesState.addMaster(MasterDto(
     name: kMasterChannel,
     cache: masterCache,
-    needSetup: masterVersion == null,
+    needSetup: masterCache?.isSetup != true,
     sdkVersion: masterVersion ?? '0.0.0',
     isGlobal: globalVersion == kMasterChannel,
   ));
@@ -157,20 +153,14 @@ final releasesStateProvider = Provider<AppReleasesState>((ref) {
     final channelCache = installedVersions.getChannel(name);
 
     // Get sdk version
-    String? sdkVersion;
-    Release? currentRelease;
-
-    if (channelCache != null) {
-      sdkVersion = getSdkVersionSync(channelCache);
-      if (sdkVersion != null) {
-        currentRelease = payload!.getReleaseFromVersion(sdkVersion);
-      }
-    }
+    final sdkVersion = channelCache?.flutterSdkVersion;
+    final currentRelease =
+        sdkVersion != null ? payload!.fromVersion(sdkVersion) : null;
 
     final channelDto = ChannelDto(
       name: name,
       cache: channelCache,
-      needSetup: sdkVersion == null,
+      needSetup: channelCache?.isSetup != true,
       sdkVersion: sdkVersion,
       // Get version for the channel
       currentRelease: currentRelease,
@@ -185,17 +175,11 @@ final releasesStateProvider = Provider<AppReleasesState>((ref) {
   for (final item in flutterReleases) {
     // Check if version is found in installed versions
     final cacheVersion = installedVersions.getVersion(item.version);
-    String? sdkVersion;
-
-    if (cacheVersion != null) {
-      sdkVersion = getSdkVersionSync(cacheVersion);
-    }
-
     final version = VersionDto(
       name: item.version,
       release: item,
       cache: cacheVersion,
-      needSetup: sdkVersion == null,
+      needSetup: cacheVersion?.isSetup != true,
       isGlobal: globalVersion == item.version,
     );
 

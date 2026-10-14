@@ -4,6 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/legacy.dart';
 import 'package:fvm/fvm.dart';
+// ignore: implementation_imports
+import 'package:fvm/src/services/flutter_service.dart';
+// ignore: implementation_imports
+import 'package:fvm/src/workflows/ensure_cache.workflow.dart';
+// ignore: implementation_imports
+import 'package:fvm/src/workflows/setup_flutter.workflow.dart';
+// ignore: implementation_imports
+import 'package:fvm/src/workflows/use_version.workflow.dart';
 import 'package:i18next/i18next.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 
@@ -11,6 +19,7 @@ import '../../modules/common/dto/release.dto.dart';
 import '../../modules/common/utils/notify.dart';
 import '../projects/project.dto.dart';
 import '../projects/projects.provider.dart';
+import '../settings/settings.dto.dart';
 import '../settings/settings.provider.dart';
 import 'fvm.provider.dart';
 
@@ -68,9 +77,9 @@ class FvmQueueState extends StateNotifier<FvmQueue> {
 
   late I18Next i18next;
 
-  /// Retrieve FVM Settings
-  FvmSettings get settings {
-    return ref.read(settingsProvider).fvm;
+  /// Retrieve Sidekick Settings
+  SidekickSettings get settings {
+    return ref.read(settingsProvider).sidekick;
   }
 
   ///  Adds install action to queue
@@ -122,10 +131,13 @@ class FvmQueueState extends StateNotifier<FvmQueue> {
       // Update queue
       state = state.update();
 
+      final version = FlutterVersion.parse(item.version.name);
+      final cacheService = fvmContext.get<CacheService>();
+
       // Run through actions
       switch (item.action) {
         case QueueAction.install:
-          await FVMClient.install(item.version.name);
+          await _install(version);
           notify(
             i18next.t(
               'modules:fvm.versionItemversionnameHasBeenInstalled',
@@ -136,7 +148,7 @@ class FvmQueueState extends StateNotifier<FvmQueue> {
           );
           break;
         case QueueAction.setupOnly:
-          await FVMClient.setup(item.version.name);
+          await _setup(cacheService.getVersion(version));
           notify(
             i18next.t(
               'modules:fvm.versionItemversionnameHasFinishedSetup',
@@ -147,8 +159,7 @@ class FvmQueueState extends StateNotifier<FvmQueue> {
           );
           break;
         case QueueAction.installAndSetup:
-          await FVMClient.install(item.version.name);
-          await FVMClient.setup(item.version.name);
+          await _setup(await _install(version));
           notify(
             i18next.t(
               'modules:fvm.versionItemversionnameHasBeenInstalled',
@@ -159,7 +170,9 @@ class FvmQueueState extends StateNotifier<FvmQueue> {
           );
           break;
         case QueueAction.channelUpgrade:
-          await FVMClient.upgradeChannel(item.version.cache!);
+          await fvmContext
+              .get<FlutterService>()
+              .runFlutter(['upgrade'], item.version.cache!);
           notify(
             i18next.t(
               'modules:fvm.channelItemversionnameHasBeenUpgraded',
@@ -170,7 +183,7 @@ class FvmQueueState extends StateNotifier<FvmQueue> {
           );
           break;
         case QueueAction.remove:
-          await FVMClient.remove(item.version.name);
+          await cacheService.remove(version);
           notify(
             i18next.t(
               'modules:fvm.versionItemversionnameHasBeenRemoved',
@@ -181,7 +194,7 @@ class FvmQueueState extends StateNotifier<FvmQueue> {
           );
           break;
         case QueueAction.setGlobal:
-          await FVMClient.setGlobalVersion(item.version.cache!);
+          cacheService.setGlobal(item.version.cache!);
           notify(
             i18next.t(
               'modules:fvm.versionItemversionnameHasBeenSetAsGlobal',
@@ -217,7 +230,14 @@ class FvmQueueState extends StateNotifier<FvmQueue> {
     String version,
   ) async {
     i18next = context.i18next;
-    await FVMClient.pinVersion(project, version);
+    final cacheVersion = await _install(FlutterVersion.parse(version));
+    await fvmContext.get<UseVersionWorkflow>()(
+      version: cacheVersion,
+      project: project,
+      force: true,
+      skipSetup: settings.skipSetup,
+      skipPubGet: true,
+    );
     await ref.read(projectsProvider.notifier).reload(project);
     notify(
       i18next.t(
@@ -228,6 +248,17 @@ class FvmQueueState extends StateNotifier<FvmQueue> {
         },
       ),
     );
+  }
+
+  Future<CacheFlutterVersion> _install(FlutterVersion version) {
+    return fvmContext.get<EnsureCacheWorkflow>()(version, shouldInstall: true);
+  }
+
+  Future<void> _setup(CacheFlutterVersion? version) async {
+    if (version == null) {
+      throw Exception('Cannot setup version that is not in cache');
+    }
+    await fvmContext.get<SetupFlutterWorkflow>()(version);
   }
 
   Future<void> _addToQueue(

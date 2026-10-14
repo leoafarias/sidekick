@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:fvm/fvm.dart';
 
 import '../../modules/common/utils/helpers.dart';
+import 'fvm.provider.dart';
 
 /// Flutter config service
 class FlutterConfigService {
@@ -13,10 +14,10 @@ class FlutterConfigService {
   /// Prefers the global version, falling back to any cached version, since
   /// the config is shared by every SDK.
   static Future<String?> _resolveFlutterExec() async {
-    final globalVersion = await FVMClient.getGlobal();
+    final globalVersion = fvmContext.get<CacheService>().getGlobal();
     if (globalVersion != null) return globalVersion.flutterExec;
 
-    final cached = await FVMClient.getCachedVersions();
+    final cached = await fvmContext.get<CacheService>().getAllVersions();
     for (final version in cached) {
       if (File(version.flutterExec).existsSync()) return version.flutterExec;
     }

@@ -101,7 +101,7 @@ final searchResultsProvider = Provider((ref) {
       if (uniques[project.name] == true) break;
 
       // Get projec pinnedVersion
-      final pinnedVersion = project.pinnedVersion ?? '';
+      final pinnedVersion = project.pinnedVersion?.nameWithAlias ?? '';
       // Add project if name or pinnedVersion start with term
       if (project.name.toLowerCase().startsWith(term) ||
           pinnedVersion.startsWith(term)) {
@@ -130,10 +130,10 @@ final searchResultsProvider = Provider((ref) {
         // Map releases to channel groups
         // TODO: remove this logic and use filterable
         switch (release.release?.channel) {
-          case Channel.stable:
+          case FlutterChannel.stable:
             stableReleaseResults.add(release);
             break;
-          case Channel.beta:
+          case FlutterChannel.beta:
             betaReleaseResults.add(release);
             break;
           default:

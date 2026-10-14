@@ -35,9 +35,9 @@ class FvmSettingsScene extends StatelessWidget {
                   context.i18n(
                       'modules:settings.scenes.dependenciesAfterANewVersionIsInstalled'),
             ),
-            value: settings.fvm.skipSetup,
+            value: settings.sidekick.skipSetup,
             onChanged: (value) {
-              settings.fvm.skipSetup = value;
+              settings.sidekick.skipSetup = value;
               onSave();
             },
           ),

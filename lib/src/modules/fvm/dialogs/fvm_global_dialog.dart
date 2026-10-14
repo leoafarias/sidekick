@@ -2,16 +2,20 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fvm/fvm.dart';
+// ignore: implementation_imports
+import 'package:fvm/src/utils/which.dart';
 import '../../../components/mdi_icons.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 
 import '../../../components/atoms/copy_button.dart';
 import '../../../components/atoms/typography.dart';
 import '../../common/utils/open_link.dart';
+import '../fvm.provider.dart';
 
 Future<void> showGlobalInfoDialog(BuildContext context) async {
-  final configured = await FVMClient.checkIfGlobalConfigured();
+  final currentPath = which('flutter', binDir: true);
+  final correctPath = fvmContext.globalCacheBinPath;
+  final isSetup = currentPath == correctPath;
 
   // ignore: use_build_context_synchronously
   if (context.mounted) {
@@ -41,21 +45,21 @@ Future<void> showGlobalInfoDialog(BuildContext context) async {
                 Subheading(
                   context.i18n('modules:fvm.dialogs.flutterPathIsPointingOn'),
                 ),
-                // Caption('${configured.currentPath}.\n\n'),
+                // Caption('${currentPath}.\n\n'),
                 Flexible(
                   child: Text.rich(
                     TextSpan(children: [
                       TextSpan(
-                          text: configured.currentPath,
+                          text: currentPath,
                           style: Theme.of(context).textTheme.bodySmall),
                       WidgetSpan(
                         alignment: PlaceholderAlignment.middle,
                         child: IconButton(
                             icon: const Icon(Icons.copy, size: 14),
                             onPressed: () {
-                              if (configured.currentPath == null) return;
+                              if (currentPath == null) return;
                               Clipboard.setData(
-                                ClipboardData(text: configured.currentPath!),
+                                ClipboardData(text: currentPath),
                               );
                             }),
                       )
@@ -65,7 +69,7 @@ Future<void> showGlobalInfoDialog(BuildContext context) async {
                 ),
                 const SizedBox(height: 12),
 
-                !configured.isSetup
+                !isSetup
                     ? Column(
                         children: [
                           Subheading(
@@ -76,8 +80,8 @@ Future<void> showGlobalInfoDialog(BuildContext context) async {
                           ),
                           Row(
                             children: [
-                              Caption(configured.correctPath),
-                              CopyButton(configured.correctPath)
+                              Caption(correctPath),
+                              CopyButton(correctPath)
                             ],
                           )
                         ],

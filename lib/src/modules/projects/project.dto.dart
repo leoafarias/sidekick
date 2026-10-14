@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:fvm/fvm.dart';
 import 'package:hive/hive.dart';
 import 'package:path/path.dart';
-import 'package:pubspec_parse/pubspec_parse.dart';
 import 'package:sidekick/src/modules/common/utils/notify.dart';
 import 'package:yaml/yaml.dart';
 
@@ -12,46 +11,33 @@ import 'package:yaml/yaml.dart';
 class FlutterProject extends Project {
   /// Project constructor
   FlutterProject._({
-    required this.name,
     required super.config,
-    required super.projectDir,
-    required this.pubspec,
+    required super.path,
+    required super.pubspec,
     this.invalid = false,
-  }) : super(
-          name: name,
-          isFlutterProject: true,
-        );
-
-  @override
-  // ignore: overridden_fields
-  final String name;
+  });
 
   /// If a project does not have pubspec
   final bool invalid;
 
   /// Create Flutter project from project
-  factory FlutterProject.fromProject(Project project, Pubspec pubspec) {
+  factory FlutterProject.fromProject(Project project) {
     return FlutterProject._(
-      name: project.name ?? pubspec.name,
       config: project.config,
-      projectDir: project.projectDir,
-      pubspec: pubspec,
+      path: project.path,
+      pubspec: project.pubspec,
     );
   }
 
   /// Create Flutter project from project
   factory FlutterProject.fromInvalidProject(Project project) {
     return FlutterProject._(
-      name: project.name ?? '',
       config: project.config,
-      projectDir: project.projectDir,
+      path: project.path,
       pubspec: null,
       invalid: true,
     );
   }
-
-  /// Pubspec
-  final Pubspec? pubspec;
 
   /// Project description
   String get description {
@@ -89,11 +75,11 @@ class FlutterProject extends Project {
     for (LookupRule rule in lookupRules) {
       List<File> yamlFiles = [];
       if (rule.fileName != null || rule.regexPattern != null) {
-        yamlFiles = await getYamlFiles(projectDir.path,
+        yamlFiles = await getYamlFiles(path,
             regexPattern: rule.regexPattern);
       } else {
         // When rule.fileName and rule.regexPattern are both null, use pubspec.yaml
-        File pubspecFile = File(join(projectDir.path, 'pubspec.yaml'));
+        File pubspecFile = File(join(path, 'pubspec.yaml'));
         if (await pubspecFile.exists()) {
           yamlFiles.add(pubspecFile);
         }
@@ -114,7 +100,7 @@ class FlutterProject extends Project {
           }
           if (found && currentMap is String) {
             // TODO: Determine whether the path is a local path or a network path
-            File imgFile = File(join(projectDir.path, currentMap));
+            File imgFile = File(join(path, currentMap));
             if (await imgFile.exists()) {
               _cachedIcon = Image.file(imgFile);
               return _cachedIcon!;
@@ -128,7 +114,7 @@ class FlutterProject extends Project {
     }
 
     // Traverse the project assets directory to find the logo file
-    final assetsPath = join(projectDir.path, "assets");
+    final assetsPath = join(path, "assets");
     final directory = Directory(assetsPath);
     List<File> findImageFiles =
         await directory.exists() ? await findLogoImages(assetsPath) : [];

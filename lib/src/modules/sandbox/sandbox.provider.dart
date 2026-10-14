@@ -188,7 +188,7 @@ class SandboxStateNotifier extends StateNotifier<TerminalState> {
 
     state.addLine(
       'Rebooting environment for ${project.name}...\n'
-      'Flutter SDK (${release.name}) running on ${project.projectDir.path}\n\n',
+      'Flutter SDK (${release.name}) running on ${project.path}\n\n',
     );
 
     _notifyListeners();
@@ -242,7 +242,7 @@ class SandboxStateNotifier extends StateNotifier<TerminalState> {
       // Create model of Terminal Cmd to send to isolate
       final terminalCmd = ProcessCmd(
         execPath: execPath,
-        workingDirectory: project.projectDir.path,
+        workingDirectory: project.path,
         args: args,
         sendPort: receivePort.sendPort,
       );

@@ -38,14 +38,14 @@ class FvmInfoTile extends StatelessWidget {
         SkListTile(
           title: Text(
               context.i18n('modules:selectedDetail.components.cacheLocation')),
-          subtitle: Caption(release.cache?.dir.path ?? ''),
+          subtitle: Caption(release.cache?.directory ?? ''),
           trailing: IconButton(
             icon: const Icon(
               Icons.open_in_new,
               size: 20,
             ),
             onPressed: () async {
-              await OpenFile.open(release.cache?.dir.path);
+              await OpenFile.open(release.cache?.directory);
             },
           ),
         ),
