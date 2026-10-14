@@ -170,9 +170,14 @@ class FvmQueueState extends StateNotifier<FvmQueue> {
           );
           break;
         case QueueAction.channelUpgrade:
-          await fvmContext
-              .get<FlutterService>()
-              .runFlutter(['upgrade'], item.version.cache!);
+          // Capture output so a failed upgrade surfaces Flutter's message
+          await fvmContext.get<FlutterService>().run(
+                'flutter',
+                ['upgrade'],
+                item.version.cache!,
+                throwOnError: true,
+                echoOutput: false,
+              );
           notify(
             i18next.t(
               'modules:fvm.channelItemversionnameHasBeenUpgraded',
