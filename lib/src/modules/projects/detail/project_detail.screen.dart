@@ -7,8 +7,8 @@ import '../../../components/atoms/typography.dart';
 import '../../../components/mdi_icons.dart';
 import '../../../components/organisms/screen.dart';
 import '../../common/utils/helpers.dart';
+import '../../ide/components/open_in_ide_button.dart';
 import '../../settings/settings.provider.dart';
-import '../../settings/settings.utils.dart';
 import '../project.dto.dart';
 import 'components/assets_tab.dart';
 import 'components/detail_widgets.dart';
@@ -53,10 +53,6 @@ class ProjectDetailScreen extends HookConsumerWidget {
     final tab = useState(initialTab);
     final details = ref.watch(projectDetailsProvider(project.path));
     final settings = ref.watch(sidekickSettingsProvider);
-    final ideName = settings.ide;
-    final ide = ideName == null
-        ? null
-        : supportedIDEs.where((ide) => ide.name == ideName).firstOrNull;
 
     void close() => ref.read(selectedProjectProvider.notifier).state = null;
 
@@ -111,21 +107,8 @@ class ProjectDetailScreen extends HookConsumerWidget {
             onPressed: () => OpenFile.open(project.path),
           ),
         ),
-        if (ide != null)
-          Tooltip(
-            message: context.i18n(
-              'modules:projects.components.openIde',
-              variables: {'ideName': ide.name},
-            ),
-            child: IconButton(
-              splashRadius: 20,
-              icon: ide.icon,
-              onPressed: () => ide.launch(
-                project.path,
-                customLocation: settings.customIdeLocation,
-              ),
-            ),
-          ),
+        OpenInSelectedIdeButton(project.path, settings),
+        OpenInIdeMenu(project.path, settings),
       ],
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
