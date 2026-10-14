@@ -46,7 +46,8 @@ Future<void> _loadFonts() async {
   };
   for (final entry in iconFonts.entries) {
     try {
-      final loader = FontLoader(entry.key)..addFont(rootBundle.load(entry.value));
+      final loader = FontLoader(entry.key)
+        ..addFont(rootBundle.load(entry.value));
       await loader.load();
     } catch (_) {
       // Icons render as boxes without the font, tests still work

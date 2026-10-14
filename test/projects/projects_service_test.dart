@@ -14,7 +14,9 @@ void main() {
   late String projectsRoot;
 
   setUpAll(() {
-    if (!Hive.isAdapterRegistered(2)) Hive.registerAdapter(ProjectPathAdapter());
+    if (!Hive.isAdapterRegistered(2)) {
+      Hive.registerAdapter(ProjectPathAdapter());
+    }
   });
 
   setUp(() async {
@@ -48,8 +50,7 @@ void main() {
 
     test('POSIX paths compare case sensitive', () {
       expect(
-        isSameProjectPath('/Users/dev/App', '/Users/dev/app',
-            context: p.posix),
+        isSameProjectPath('/Users/dev/App', '/Users/dev/app', context: p.posix),
         isFalse,
       );
     });

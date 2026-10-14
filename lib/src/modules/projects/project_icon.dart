@@ -70,7 +70,8 @@ Future<File?> findProjectIcon(String projectPath) async {
 Future<List<File>> _launcherIconsConfigs(String projectPath) async {
   final files = <File>[];
   try {
-    await for (final entity in Directory(projectPath).list(followLinks: false)) {
+    await for (final entity
+        in Directory(projectPath).list(followLinks: false)) {
       if (entity is File &&
           _launcherIconsConfigPattern.hasMatch(p.basename(entity.path))) {
         files.add(entity);
