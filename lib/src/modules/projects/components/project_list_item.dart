@@ -7,6 +7,7 @@ import 'package:sidekick/src/modules/settings/settings.provider.dart';
 import '../../../components/atoms/typography.dart';
 import '../../../components/molecules/version_install_button.dart';
 import '../../ide/components/open_in_ide_button.dart';
+import '../../navigation/navigation.provider.dart';
 import '../../releases/releases.provider.dart';
 import '../../sandbox/sandbox.screen.dart';
 import '../detail/project_detail.provider.dart';
@@ -54,6 +55,10 @@ class ProjectListItem extends ConsumerWidget {
 
     void openDetail() {
       ref.read(selectedProjectProvider.notifier).state = project.path;
+      // The card is also shown in search results
+      ref
+          .read(navigationProvider.notifier)
+          .goTo(NavigationRoutes.projectsScreen);
     }
 
     return SizedBox(

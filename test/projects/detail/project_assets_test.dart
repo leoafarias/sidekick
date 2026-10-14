@@ -66,10 +66,28 @@ flutter:
     - missing/
     - logo.png
     - ../outside/
+    - /opt/shared/images/
+    - C:\\shared\\images\\
 ''');
 
     expect(assetRootFolders(app, pubspec), ['assets', 'images']);
   });
+
+  test('lists symlinked files', () async {
+    final images = p.join(app, 'assets', 'images');
+    writePng(temp.path, 'shared/logo.png');
+    writePng(temp.path, 'shared/2.0x/logo.png');
+    Directory(p.join(images, '2.0x')).createSync(recursive: true);
+    Link(p.join(images, 'logo.png')).createSync(p.join(temp.path, 'shared', 'logo.png'));
+    Link(p.join(images, '2.0x', 'logo.png'))
+        .createSync(p.join(temp.path, 'shared', '2.0x', 'logo.png'));
+
+    final entries = await listAssetFolder(images);
+
+    final logo = entries.whereType<AssetFile>().single;
+    expect(logo.name, 'logo.png');
+    expect(logo.variants, [1.0, 2.0]);
+  }, skip: Platform.isWindows ? 'Symlinks need admin rights on Windows' : null);
 
   test('loads project details', () async {
     writeFile(app, 'pubspec.yaml', flutterPubspec());

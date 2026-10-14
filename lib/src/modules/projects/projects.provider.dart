@@ -65,6 +65,12 @@ class ProjectsStateNotifier extends StateNotifier<List<FlutterProject>> {
     }
   }
 
+  /// Reloads all projects and looks up their icons again
+  Future<void> refresh() {
+    FlutterProject.clearIconCache();
+    return load();
+  }
+
   /// Reloads one project
   Future<void> reload(FlutterProject project) => reloadPath(project.path);
 
@@ -75,15 +81,23 @@ class ProjectsStateNotifier extends StateNotifier<List<FlutterProject>> {
     );
     if (index == -1) return;
 
-    final updated = [...state];
-    updated[index] = ProjectsService.loadProject(state[index].path);
-    state = updated;
+    final storedPath = state[index].path;
+    final project = await ProjectsService.loadProjectInBackground(storedPath);
+    FlutterProject.clearIconCache(storedPath);
+    if (!mounted) return;
+
+    // The list may have changed while loading
+    final current = state.indexWhere(
+      (item) => isSameProjectPath(item.path, storedPath),
+    );
+    if (current == -1) return;
+    state = [...state]..[current] = project;
   }
 
   /// Adds a project
   Future<void> addProject(BuildContext context, String path) async {
     final i18next = context.i18next;
-    final project = ProjectsService.loadProject(path);
+    final project = await ProjectsService.loadProjectInBackground(path);
 
     switch (project.loadError) {
       case null:

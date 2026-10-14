@@ -35,7 +35,7 @@ class ProjectsScreen extends HookConsumerWidget {
     final projectsScrollController = ScrollController();
 
     Future<void> onRefresh() async {
-      await ref.read(projectsProvider.notifier).load();
+      await ref.read(projectsProvider.notifier).refresh();
       notify(
         // ignore: use_build_context_synchronously
         context.i18n('modules:projects.projectsRefreshed'),
@@ -57,7 +57,8 @@ class ProjectsScreen extends HookConsumerWidget {
     useEffect(() {
       if (settings.sidekick.onlyProjectsWithFvm) {
         filteredProjects.value =
-            projects.where((p) => p.pinnedVersion != null).toList();
+            // Keep unavailable projects visible so they can be removed
+            projects.where((p) => p.invalid || p.pinnedVersion != null).toList();
       } else {
         filteredProjects.value = [...projects];
       }
@@ -70,6 +71,19 @@ class ProjectsScreen extends HookConsumerWidget {
         : projects
             .where((p) => !p.invalid && isSameProjectPath(p.path, selectedPath))
             .firstOrNull;
+
+    // Clear a selection whose project was removed or became unavailable, so
+    // its detail view doesn't reopen by itself when it loads again
+    final staleSelection = selectedPath != null && selected == null;
+    useEffect(() {
+      if (staleSelection) {
+        Future.microtask(
+          () => ref.read(selectedProjectProvider.notifier).state = null,
+        );
+      }
+      return null;
+    }, [staleSelection]);
+
     if (selected != null) {
       return ProjectDetailScreen(selected, key: ValueKey(selected.path));
     }

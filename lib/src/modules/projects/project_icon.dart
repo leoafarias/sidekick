@@ -4,8 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
-/// Image extensions that can be shown as a project icon
-const projectIconExtensions = ['.png', '.jpg', '.jpeg'];
+import 'detail/project_assets.dart';
 
 /// Keys looked up in pubspec.yaml and flutter_launcher_icons config files,
 /// in priority order
@@ -52,7 +51,7 @@ Future<File?> findProjectIcon(String projectPath) async {
       final value = await _readYamlString(config, keys);
       if (value == null) continue;
       final file = File(p.join(projectPath, value));
-      if (_isImage(file.path) && await file.exists()) return file;
+      if (isPreviewableImage(file.path) && await file.exists()) return file;
     }
   }
 
@@ -112,7 +111,7 @@ Future<File?> _findAssetsLogo(String assetsPath) async {
       if (++inspected > _maxAssetEntries) break;
       if (entity is! File) continue;
       final name = p.basename(entity.path).toLowerCase();
-      if (_isImage(name) && name.contains('logo')) logos.add(entity);
+      if (isPreviewableImage(name) && name.contains('logo')) logos.add(entity);
     }
   } on FileSystemException catch (e) {
     debugPrint('Could not list $assetsPath: $e');
@@ -123,6 +122,3 @@ Future<File?> _findAssetsLogo(String assetsPath) async {
   return logos.first;
 }
 
-bool _isImage(String path) {
-  return projectIconExtensions.contains(p.extension(path).toLowerCase());
-}

@@ -34,7 +34,6 @@ class AllSettings {
       );
 }
 
-/// Sidekick settings
 /// i18next options for the app.
 ///
 /// Interpolated values are not HTML-escaped: strings are shown in Text
@@ -42,6 +41,7 @@ class AllSettings {
 /// `>` (for example in errors, paths and version constraints).
 const kI18NextOptions = I18NextOptions(escapeValue: false);
 
+/// Sidekick settings
 class SidekickSettings {
   /// Constructor
   SidekickSettings({

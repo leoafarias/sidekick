@@ -68,15 +68,25 @@ class FlutterProject extends Project {
     return pubspec?.description ?? '';
   }
 
-  // Cache for the icon to avoid repeated file I/O
-  Widget? _cachedIcon;
+  // Icons by project path. Kept across reloads, which rebuild every
+  // project, so the lookup doesn't scan each project again.
+  static final _iconCache = <String, Widget>{};
+
+  /// Clears the cached icon of [path], or of every project
+  static void clearIconCache([String? path]) {
+    if (path == null) {
+      _iconCache.clear();
+    } else {
+      _iconCache.remove(path);
+    }
+  }
 
   /// Icon if it was already resolved
-  Widget? get cachedIcon => _cachedIcon;
+  Widget? get cachedIcon => _iconCache[path];
 
   /// Project icon
   Future<Widget> get icon async {
-    final cached = _cachedIcon;
+    final cached = _iconCache[path];
     if (cached != null) return cached;
 
     final file = invalid ? null : await findProjectIcon(path);
@@ -87,7 +97,7 @@ class FlutterProject extends Project {
             errorBuilder: (_, __, ___) => const FlutterLogo(),
           )
         : const FlutterLogo();
-    _cachedIcon = icon;
+    _iconCache[path] = icon;
     return icon;
   }
 }

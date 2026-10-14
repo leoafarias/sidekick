@@ -13,6 +13,11 @@ const previewableImageExtensions = {
   '.bmp',
 };
 
+/// Whether [path] is an image that can be previewed
+bool isPreviewableImage(String path) {
+  return previewableImageExtensions.contains(p.extension(path).toLowerCase());
+}
+
 /// Folder names Flutter uses for resolution-aware images, like `2.0x`
 final _variantFolderPattern = RegExp(r'^\d+(\.\d+)?x$');
 
@@ -49,8 +54,7 @@ class AssetFile extends AssetEntry {
   final List<double> variants;
 
   /// Whether the file can be previewed as an image
-  bool get isImage =>
-      previewableImageExtensions.contains(p.extension(path).toLowerCase());
+  bool get isImage => isPreviewableImage(path);
 }
 
 /// Lists [directory] like Flutter resolves assets: `2.0x`/`3.0x` folders are
@@ -72,13 +76,13 @@ Future<List<AssetEntry>> listAssetFolder(String directory) async {
         await for (final file
             in Directory(entity.path).list(followLinks: false)) {
           final fileName = p.basename(file.path);
-          if (file is! File || fileName.startsWith('.')) continue;
+          if (!_isFile(file) || fileName.startsWith('.')) continue;
           variants.putIfAbsent(fileName, () => {})[ratio] = file.path;
         }
       } else {
         folders.add(AssetFolder(entity.path));
       }
-    } else if (entity is File) {
+    } else if (_isFile(entity)) {
       mainFiles[name] = entity.path;
     }
   }
@@ -100,6 +104,17 @@ Future<List<AssetEntry>> listAssetFolder(String directory) async {
   folders.sort(byName);
   files.sort(byName);
   return [...folders, ...files];
+}
+
+/// Whether [entity] is a file or a link to one
+bool _isFile(FileSystemEntity entity) {
+  if (entity is File) return true;
+  if (entity is! Link) return false;
+  try {
+    return FileSystemEntity.isFileSync(entity.path);
+  } on FileSystemException {
+    return false;
+  }
 }
 
 bool _isDirectory(Link link) {
@@ -127,6 +142,9 @@ List<String> assetRootFolders(String projectPath, String pubspecYaml) {
         // Since Flutter 3.22 an asset can be a map with a `path` key
         final value = asset is YamlMap ? asset['path'] : asset;
         if (value is! String) continue;
+        // Assets are relative to the project; skip absolute paths so a
+        // filesystem root never becomes a browsable asset folder
+        if (p.posix.isAbsolute(value) || p.windows.isAbsolute(value)) continue;
         final segments = p.posix.split(p.posix.normalize(value));
         if (segments.isEmpty || segments.first == '..') continue;
         if (segments.length == 1 && !value.endsWith('/')) continue;

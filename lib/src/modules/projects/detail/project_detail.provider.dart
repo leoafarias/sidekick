@@ -102,7 +102,17 @@ class ProjectEditor {
   }
 
   Future<void> _write(String path, String yaml) async {
-    await _pubspec(path).writeAsString(yaml, flush: true);
+    // Write to a temp file and rename it over pubspec.yaml, so a failure
+    // mid-write (full disk, crash) can't leave the pubspec truncated
+    final pubspec = _pubspec(path);
+    final temp = File('${pubspec.path}.sidekick-tmp');
+    try {
+      await temp.writeAsString(yaml, flush: true);
+      await temp.rename(pubspec.path);
+    } catch (_) {
+      if (await temp.exists()) await temp.delete();
+      rethrow;
+    }
     _ref.invalidate(projectDetailsProvider(path));
     await _ref.read(projectsProvider.notifier).reloadPath(path);
   }

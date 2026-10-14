@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
 import 'package:fvm/fvm.dart';
@@ -172,7 +173,17 @@ class ProjectsService {
   /// config, offline drive) is returned as unavailable instead of being
   /// dropped, so a single broken entry can't hide the other projects and the
   /// user can still remove it.
-  static Future<List<FlutterProject>> load() async {
-    return paths.map(loadProject).toList();
+  ///
+  /// Disk access runs in a background isolate: checking a folder on a
+  /// disconnected network drive can block until the OS times out, which would
+  /// otherwise freeze the app.
+  static Future<List<FlutterProject>> load() {
+    final paths = ProjectsService.paths;
+    return Isolate.run(() => paths.map(loadProject).toList());
+  }
+
+  /// Loads a single project in a background isolate, see [load]
+  static Future<FlutterProject> loadProjectInBackground(String path) {
+    return Isolate.run(() => loadProject(path));
   }
 }
