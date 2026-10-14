@@ -15,7 +15,10 @@ import '../../modules/common/utils/notify.dart';
 import '../settings/settings.provider.dart';
 import 'components/project_list_item.dart';
 import 'components/projects_empty.dart';
+import 'detail/project_detail.provider.dart';
+import 'detail/project_detail.screen.dart';
 import 'projects.provider.dart';
+import 'projects.service.dart';
 
 /// Projects screen
 class ProjectsScreen extends HookConsumerWidget {
@@ -32,7 +35,7 @@ class ProjectsScreen extends HookConsumerWidget {
     final projectsScrollController = ScrollController();
 
     Future<void> onRefresh() async {
-      await ref.read(projectsProvider.notifier).load();
+      await ref.read(projectsProvider.notifier).refresh();
       notify(
         // ignore: use_build_context_synchronously
         context.i18n('modules:projects.projectsRefreshed'),
@@ -54,12 +57,38 @@ class ProjectsScreen extends HookConsumerWidget {
     useEffect(() {
       if (settings.sidekick.onlyProjectsWithFvm) {
         filteredProjects.value =
-            projects.where((p) => p.pinnedVersion != null).toList();
+            // Keep unavailable projects visible so they can be removed
+            projects.where((p) => p.invalid || p.pinnedVersion != null).toList();
       } else {
         filteredProjects.value = [...projects];
       }
       return;
     }, [projects, settings.sidekick]);
+
+    final selectedPath = ref.watch(selectedProjectProvider);
+    final selected = selectedPath == null
+        ? null
+        : projects
+            .where((p) => !p.invalid && isSameProjectPath(p.path, selectedPath))
+            .firstOrNull;
+
+    // Clear a selection whose project was removed or became unavailable, so
+    // its detail view doesn't reopen by itself when it loads again
+    final staleSelection = selectedPath != null && selected == null;
+    useEffect(() {
+      if (staleSelection) {
+        Future.microtask(() {
+          if (context.mounted) {
+            ref.read(selectedProjectProvider.notifier).state = null;
+          }
+        });
+      }
+      return null;
+    }, [staleSelection]);
+
+    if (selected != null) {
+      return ProjectDetailScreen(selected, key: ValueKey(selected.path));
+    }
 
     return SkScreen(
       title: context.i18n('modules:projects.projects'),

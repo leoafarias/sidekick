@@ -14,6 +14,11 @@ final settingsProvider =
   );
 });
 
+/// Sidekick settings only, for widgets that don't need the Flutter config
+final sidekickSettingsProvider = Provider<SidekickSettings>((ref) {
+  return ref.watch(settingsProvider).sidekick;
+});
+
 class _SettingsStateNotifier extends StateNotifier<AllSettings> {
   Ref ref;
 

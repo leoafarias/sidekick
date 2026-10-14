@@ -7,7 +7,6 @@
 // ignore_for_file: top_level_function_literal_block
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:fvm/fvm.dart';
@@ -29,6 +28,7 @@ final projectsPerVersionProvider = Provider((ref) {
   }
 
   for (final project in projects) {
+    if (project.invalid) continue;
     final version = project.pinnedVersion?.nameWithAlias ?? 'NONE';
     final versionProjects = list[version];
     if (versionProjects != null) {
@@ -54,42 +54,88 @@ class ProjectsStateNotifier extends StateNotifier<List<FlutterProject>> {
     load();
   }
 
-  /// Triggers a full project reload. Adds a 1 second delay on update
-  /// if [withDelay] is true for better UI feedback
+  // Incremented on every load, so a slow load can't overwrite a newer one
+  var _loadGeneration = 0;
+
+  /// Reloads all projects from storage and disk
   Future<void> load() async {
-    final projects = await ProjectsService.load();
-    state = projects.toList();
+    final generation = ++_loadGeneration;
+    try {
+      final projects = await ProjectsService.load();
+      if (mounted && generation == _loadGeneration) state = projects;
+    } catch (e, stackTrace) {
+      debugPrint('Could not load projects: $e\n$stackTrace');
+      notifyError(e.toString());
+    }
+  }
+
+  /// Reloads all projects and looks up their icons again
+  Future<void> refresh() {
+    FlutterProject.clearIconCache();
+    return load();
   }
 
   /// Reloads one project
-  Future<void> reload(FlutterProject project) async {
-    final index = state.indexWhere((item) => item.path == project.path);
-    if (index == -1) return;
-    // Update project from disk
-    state[index] = FlutterProject.fromProject(
-      Project.loadFromDirectory(Directory(project.path)),
-    );
+  Future<void> reload(FlutterProject project) => reloadPath(project.path);
 
-    /// Notify state
-    state = [...state];
+  /// Reloads the project at [path] from disk
+  Future<void> reloadPath(String path) async {
+    final index = state.indexWhere(
+      (item) => isSameProjectPath(item.path, path),
+    );
+    if (index == -1) return;
+
+    final storedPath = state[index].path;
+    final project = await ProjectsService.loadProjectInBackground(storedPath);
+    FlutterProject.clearIconCache(storedPath);
+    if (!mounted) return;
+
+    // The list may have changed while loading
+    final current = state.indexWhere(
+      (item) => isSameProjectPath(item.path, storedPath),
+    );
+    if (current == -1) return;
+    state = [...state]..[current] = project;
   }
 
   /// Adds a project
   Future<void> addProject(BuildContext context, String path) async {
-    final project = Project.loadFromDirectory(Directory(path));
-    if (project.isFlutter) {
-      final ref = ProjectRef(name: path.split('/').last, path: path);
-      await ProjectsService.box.put(path, ref);
-      await load();
-    } else {
-      // ignore: use_build_context_synchronously
-      notify(context.i18n('modules:projects.notAFlutterProject'));
+    final i18next = context.i18next;
+    final project = await ProjectsService.loadProjectInBackground(path);
+
+    switch (project.loadError) {
+      case null:
+        break;
+      case ProjectLoadError.missingPubspec:
+      case ProjectLoadError.notFlutter:
+        notify(i18next.t('modules:projects.notAFlutterProject'));
+        return;
+      case ProjectLoadError.notFound:
+      case ProjectLoadError.unreadable:
+        notifyError(
+          i18next.t(
+            'modules:projects.couldNotReadProject',
+            variables: {'error': project.loadErrorDetails ?? path},
+          ),
+        );
+        return;
     }
+
+    try {
+      final added = await ProjectsService.add(path);
+      if (!added) {
+        notify(i18next.t('modules:projects.projectAlreadyAdded'));
+      }
+    } catch (e) {
+      notifyError(e.toString());
+    }
+    await load();
   }
 
   /// Removes a project
-  void removeProject(String path) {
-    ProjectsService.box.delete(path);
-    load();
+  Future<void> removeProject(String path) async {
+    await ProjectsService.remove(path);
+    FlutterProject.clearIconCache(path);
+    await load();
   }
 }

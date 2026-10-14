@@ -1442,7 +1442,7 @@ packages:
     source: hosted
     version: "3.1.4"
   yaml_edit:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: yaml_edit
       sha256: "07c9e63ba42519745182b88ca12264a7ba2484d8239958778dfe4d44fe760488"
