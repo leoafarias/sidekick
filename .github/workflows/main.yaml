@@ -143,15 +143,24 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
-      # SignTool rejects the committed SIDEKICK-CERT.pfx, so dev builds are signed
-      # with a throwaway self-signed certificate generated for each run.
+      # Dev builds are signed with a long-lived self-signed certificate
+      # (public part: windows/sidekick-dev.cer) so testers only trust it once.
+      # Fork PRs can't read secrets, so they fall back to a throwaway one.
       - name: Create dev signing certificate
+        env:
+          WIN_DEV_CERT_PFX: ${{ secrets.WIN_DEV_CERT_PFX }}
+          WIN_DEV_CERT_PASS: ${{ secrets.WIN_DEV_CERT_PASS }}
         run: |
-          $password = [guid]::NewGuid().ToString()
+          if ($env:WIN_DEV_CERT_PFX) {
+            [IO.File]::WriteAllBytes("windows\dev-cert.pfx", [Convert]::FromBase64String($env:WIN_DEV_CERT_PFX))
+            $password = $env:WIN_DEV_CERT_PASS
+          } else {
+            $password = [guid]::NewGuid().ToString()
+            $cert = New-SelfSignedCertificate -Type CodeSigningCert -Subject "CN=Sidekick Contributors" -CertStoreLocation Cert:\CurrentUser\My -NotAfter (Get-Date).AddDays(7)
+            Export-PfxCertificate -Cert $cert -FilePath windows\dev-cert.pfx -Password (ConvertTo-SecureString -String $password -Force -AsPlainText)
+          }
           echo "::add-mask::$password"
           echo "DEV_CERT_PASS=$password" >> $env:GITHUB_ENV
-          $cert = New-SelfSignedCertificate -Type CodeSigningCert -Subject "CN=Sidekick Contributors" -CertStoreLocation Cert:\CurrentUser\My -NotAfter (Get-Date).AddDays(7)
-          Export-PfxCertificate -Cert $cert -FilePath windows\dev-cert.pfx -Password (ConvertTo-SecureString -String $password -Force -AsPlainText)
 
       - name: Write MSIX
         uses: DamianReeves/write-file-action@v1.0
@@ -195,7 +204,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sidekick-windows-dev.msix
-          path: build/windows/x64/runner/Release/sidekick.msix
+          path: |
+            build/windows/x64/runner/Release/sidekick.msix
+            windows/sidekick-dev.cer
 
       - name: Upload Build Zip
         uses: actions/upload-artifact@v4
