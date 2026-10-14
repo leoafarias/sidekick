@@ -66,15 +66,17 @@ class ProjectsStateNotifier extends StateNotifier<List<FlutterProject>> {
   }
 
   /// Reloads one project
-  Future<void> reload(FlutterProject project) async {
+  Future<void> reload(FlutterProject project) => reloadPath(project.path);
+
+  /// Reloads the project at [path] from disk
+  Future<void> reloadPath(String path) async {
     final index = state.indexWhere(
-      (item) => isSameProjectPath(item.path, project.path),
+      (item) => isSameProjectPath(item.path, path),
     );
     if (index == -1) return;
 
-    // Update project from disk
     final updated = [...state];
-    updated[index] = ProjectsService.loadProject(project.path);
+    updated[index] = ProjectsService.loadProject(state[index].path);
     state = updated;
   }
 

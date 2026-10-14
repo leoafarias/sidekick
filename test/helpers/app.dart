@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -38,36 +40,68 @@ Widget testApp(
   return ProviderScope(
     overrides: overrides,
     retry: (_, __) => null,
-    child: OKToast(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: darkTheme,
-        locale: locale,
-        supportedLocales: [locale],
-        localizationsDelegates: [
-          I18NextLocalizationDelegate(
-            locales: [locale],
-            dataSource: _FileDataSource(),
-          ),
-          ...GlobalMaterialLocalizations.delegates,
-          GlobalWidgetsLocalizations.delegate,
-        ],
-        home: child,
+    child: RepaintBoundary(
+      key: screenshotKey,
+      child: OKToast(
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: darkTheme,
+          locale: locale,
+          supportedLocales: [locale],
+          localizationsDelegates: [
+            I18NextLocalizationDelegate(
+              locales: [locale],
+              dataSource: _FileDataSource(),
+            ),
+            ...GlobalMaterialLocalizations.delegates,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          home: child,
+        ),
       ),
     ),
   );
 }
 
+/// Key of the boundary captured by [takeScreenshot]
+final screenshotKey = GlobalKey();
+
+/// Saves a PNG of the app to `$SCREENSHOT_DIR/<name>.png` when the
+/// SCREENSHOT_DIR environment variable is set
+Future<void> takeScreenshot(WidgetTester tester, String name) async {
+  final dir = Platform.environment['SCREENSHOT_DIR'];
+  if (dir == null) return;
+  final boundary = tester.renderObject<RenderRepaintBoundary>(
+    find.byKey(screenshotKey),
+  );
+  await tester.runAsync(() async {
+    final image = await boundary.toImage(
+      pixelRatio: tester.view.devicePixelRatio,
+    );
+    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    Directory(dir).createSync(recursive: true);
+    File('$dir/$name.png').writeAsBytesSync(bytes!.buffer.asUint8List());
+  });
+}
+
+/// Sets the window size used by a test
+void setWindowSize(WidgetTester tester, Size size, {double pixelRatio = 2}) {
+  tester.view.devicePixelRatio = pixelRatio;
+  tester.view.physicalSize = size * pixelRatio;
+  addTearDown(tester.view.reset);
+}
+
 /// Pumps until async work started by the widget tree has settled.
 ///
-/// Real file IO doesn't advance with fake time, so this alternates between
-/// running real async work and pumping frames.
-Future<void> settle(WidgetTester tester, {int rounds = 10}) async {
+/// Real file IO doesn't advance with fake time, and each await on IO needs a
+/// pump to run its continuation, so this alternates between letting real
+/// async work run and pumping frames.
+Future<void> settle(WidgetTester tester, {int rounds = 60}) async {
   for (var i = 0; i < rounds; i++) {
     await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 20)),
+      () => Future<void>.delayed(const Duration(milliseconds: 5)),
     );
-    await tester.pump(const Duration(milliseconds: 50));
+    await tester.pump(const Duration(milliseconds: 20));
   }
 }
 

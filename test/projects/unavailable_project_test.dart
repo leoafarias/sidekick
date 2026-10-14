@@ -7,17 +7,23 @@ import 'package:sidekick/src/modules/projects/project.dto.dart';
 import '../helpers/app.dart';
 
 void main() {
-  testWidgets('shows why a stored project could not be loaded',
-      (tester) async {
+  testWidgets('shows why a stored project could not be loaded', (tester) async {
     final project = FlutterProject.unavailable(
       '/Volumes/USB/my_app',
       ProjectLoadError.notFound,
     );
 
+    setWindowSize(tester, const Size(340, 200));
     await pumpTestApp(
       tester,
-      Scaffold(body: ProjectListItem(project, versionSelect: true)),
+      Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(10),
+          child: ProjectListItem(project, versionSelect: true),
+        ),
+      ),
     );
+    await takeScreenshot(tester, 'project_unavailable_card');
 
     expect(find.text('my_app'), findsOneWidget);
     expect(find.text('Project folder not found'), findsOneWidget);

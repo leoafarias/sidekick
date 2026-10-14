@@ -9,6 +9,7 @@ import '../../../components/molecules/version_install_button.dart';
 import '../../ide/components/open_in_ide_button.dart';
 import '../../releases/releases.provider.dart';
 import '../../sandbox/sandbox.screen.dart';
+import '../detail/project_detail.provider.dart';
 import '../project.dto.dart';
 import 'project_actions.dart';
 import 'project_release_select.dart';
@@ -51,6 +52,10 @@ class ProjectListItem extends ConsumerWidget {
       );
     }
 
+    void openDetail() {
+      ref.read(selectedProjectProvider.notifier).state = project.path;
+    }
+
     return SizedBox(
       height: 170,
       child: Center(
@@ -81,6 +86,7 @@ class ProjectListItem extends ConsumerWidget {
                 ),
                 title: Subheading(project.name),
                 trailing: ProjectActions(project),
+                onTap: openDetail,
               ),
               const Divider(height: 0, thickness: 1),
               Padding(
@@ -105,6 +111,15 @@ class ProjectListItem extends ConsumerWidget {
               Row(
                 children: [
                   const SizedBox(width: 10),
+                  Tooltip(
+                    message: context.i18n('modules:projects.detail.manage'),
+                    child: IconButton(
+                      iconSize: 20,
+                      splashRadius: 20,
+                      icon: Icon(MdiIcons.tune),
+                      onPressed: openDetail,
+                    ),
+                  ),
                   Tooltip(
                     message: context.i18n(
                         'modules:projects.components.openTerminalPlayground'),

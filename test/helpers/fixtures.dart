@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:path/path.dart' as p;
 
@@ -103,4 +104,36 @@ String createFlutterApp(
     Directory(p.join(path, platform)).createSync(recursive: true);
   }
   return path;
+}
+
+/// Writes a [size]x[size] PNG filled with [color] and a lighter circle.
+///
+/// Must run outside fake async (in `tester.runAsync` in widget tests).
+Future<File> writeColorPng(
+  String root,
+  String relative,
+  ui.Color color, {
+  int size = 96,
+}) async {
+  final recorder = ui.PictureRecorder();
+  final canvas = ui.Canvas(recorder);
+  final s = size.toDouble();
+  canvas.drawRRect(
+    ui.RRect.fromRectAndRadius(
+      ui.Rect.fromLTWH(0, 0, s, s),
+      ui.Radius.circular(s / 5),
+    ),
+    ui.Paint()..color = color,
+  );
+  canvas.drawCircle(
+    ui.Offset(s / 2, s / 2),
+    s / 4,
+    ui.Paint()..color = const ui.Color(0x88FFFFFF),
+  );
+  final image = await recorder.endRecording().toImage(size, size);
+  final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+  final file = File(p.joinAll([root, ...relative.split('/')]));
+  file.parent.createSync(recursive: true);
+  file.writeAsBytesSync(bytes!.buffer.asUint8List());
+  return file;
 }

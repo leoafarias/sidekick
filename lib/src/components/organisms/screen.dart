@@ -8,6 +8,7 @@ class SkScreen extends StatelessWidget {
   /// Constructor
   const SkScreen({
     required this.title,
+    this.leading,
     this.actions = const [],
     this.processing = false,
     this.extendBody = true,
@@ -17,6 +18,9 @@ class SkScreen extends StatelessWidget {
 
   /// Screen title
   final String title;
+
+  /// Widget before the title, like a back button
+  final Widget? leading;
 
   /// Screen actions
   final List<Widget> actions;
@@ -56,8 +60,11 @@ class SkScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Heading(title),
-                      const Spacer(),
+                      if (leading != null) ...[
+                        leading!,
+                        const SizedBox(width: 10),
+                      ],
+                      Expanded(child: Heading(title)),
                       ...actions,
                       const SizedBox(width: 10),
                     ],
