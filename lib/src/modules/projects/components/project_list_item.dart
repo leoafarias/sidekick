@@ -32,7 +32,7 @@ class ProjectListItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final cachedVersions = ref.watch(releasesStateProvider).all;
 
-    final version = ref.watch(getVersionProvider(project.pinnedVersion));
+    final version = ref.watch(getVersionProvider(project.pinnedVersion?.nameWithAlias));
 
     final needInstall = version != null && project.pinnedVersion != null;
 
@@ -57,7 +57,7 @@ class ProjectListItem extends ConsumerWidget {
 
     void openIde() {
       ide?.launch(
-        project.projectDir.absolute.path,
+        project.path,
         customLocation: sidekickSettings.customIdeLocation,
       );
     }

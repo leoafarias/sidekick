@@ -48,7 +48,10 @@
       "flutterPathIsPointingOn": "Flutter path menunjukkan ke \n",
       "changeThePathTo": "Ubah path ke\n",
       "ifYouWantToFlutterSdkThroughFvm": "Jika Anda ingin menggunakan Flutter SDK melalui FVM",
-      "howToUpdateYourPath": "Bagaimana cara mengubah path Anda?"
+      "howToUpdateYourPath": "Bagaimana cara mengubah path Anda?",
+      "couldNotUpgradeVersionname": "Tidak dapat memperbarui {{versionName}}",
+      "forceUpgradeDiscardsChanges": "Pembaruan paksa membuang semua perubahan lokal di SDK ini lalu memperbaruinya. Proyek Anda tidak terpengaruh.",
+      "forceUpgrade": "Paksa perbarui"
     }
   },
   "projects": {

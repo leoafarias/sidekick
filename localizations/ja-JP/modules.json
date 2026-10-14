@@ -48,7 +48,10 @@
       "flutterPathIsPointingOn": "FlutterのPATH\n ",
       "changeThePathTo": "次のパスに変更\n",
       "ifYouWantToFlutterSdkThroughFvm": "FVMでFlutter SDKをアップデートしたい場合",
-      "howToUpdateYourPath": "Pathを更新するには？"
+      "howToUpdateYourPath": "Pathを更新するには？",
+      "couldNotUpgradeVersionname": "{{versionName}} をアップグレードできませんでした",
+      "forceUpgradeDiscardsChanges": "強制アップグレードは、この SDK のローカルの変更をすべて破棄してからアップグレードします。プロジェクトには影響しません。",
+      "forceUpgrade": "強制アップグレード"
     }
   },
   "projects": {

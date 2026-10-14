@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
-import 'package:fvm/fvm.dart';
 import 'package:hive/hive.dart';
 import 'package:i18next/i18next.dart';
 import 'package:sidekick/i18n/language_manager.dart';
@@ -11,22 +10,18 @@ import 'settings.utils.dart';
 /// All Settings
 class AllSettings {
   SidekickSettings sidekick;
-  FvmSettings fvm;
   FlutterSettings flutter;
 
   AllSettings({
-    required this.fvm,
     required this.flutter,
     required this.sidekick,
   });
 
   static AllSettings create({
     SidekickSettings? sidekick,
-    FvmSettings? fvm,
     FlutterSettings? flutter,
   }) {
     return AllSettings(
-      fvm: fvm ?? FvmSettings(),
       flutter: flutter ?? FlutterSettings(),
       sidekick: sidekick ?? SidekickSettings(),
     );
@@ -34,7 +29,6 @@ class AllSettings {
 
   AllSettings copy() => AllSettings(
         sidekick: SidekickSettings.fromJson(sidekick.toJson()),
-        fvm: FvmSettings.fromJson(fvm.toJson()),
         flutter: FlutterSettings.fromMap(flutter.toMap()),
       );
 }
@@ -44,6 +38,7 @@ class SidekickSettings {
   /// Constructor
   SidekickSettings({
     this.onlyProjectsWithFvm = false,
+    this.skipSetup = false,
     this.projectPaths = const [],
     this.themeMode = SettingsThemeMode.system,
     this.locale,
@@ -61,6 +56,9 @@ class SidekickSettings {
   static const key = 'settings_key';
 
   bool onlyProjectsWithFvm;
+
+  /// Skip Flutter setup after installing a version
+  bool skipSetup;
   List<String> projectPaths;
   String themeMode;
   I18NextLocalizationDelegate localizationsDelegate;
@@ -82,6 +80,7 @@ class SidekickSettings {
     return SidekickSettings(
       projectPaths: (json['projectPaths'] as List<dynamic>).cast<String>(),
       onlyProjectsWithFvm: json['onlyProjectsWithFvm'] as bool? ?? false,
+      skipSetup: json['skipSetup'] as bool? ?? false,
       themeMode: json['themeMode'] as String? ?? SettingsThemeMode.system,
       locale: locale,
       ide: json['ide'],
@@ -96,6 +95,7 @@ class SidekickSettings {
     return {
       'projectPaths': projectPaths,
       'onlyProjectsWithFvm': onlyProjectsWithFvm,
+      'skipSetup': skipSetup,
       'themeMode': themeMode,
       'i18Locale': locale?.toLanguageTag() ??
           languageManager.supportedLocales.first.toLanguageTag(),

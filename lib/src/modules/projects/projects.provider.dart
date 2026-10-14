@@ -29,7 +29,7 @@ final projectsPerVersionProvider = Provider((ref) {
   }
 
   for (final project in projects) {
-    final version = project.pinnedVersion ?? 'NONE';
+    final version = project.pinnedVersion?.nameWithAlias ?? 'NONE';
     final versionProjects = list[version];
     if (versionProjects != null) {
       versionProjects.add(project);
@@ -54,12 +54,6 @@ class ProjectsStateNotifier extends StateNotifier<List<FlutterProject>> {
     load();
   }
 
-  /// Pins a release to project
-  Future<void> pinRelease(FlutterProject project, String version) async {
-    await FVMClient.pinVersion(project, version);
-    await reload(project);
-  }
-
   /// Triggers a full project reload. Adds a 1 second delay on update
   /// if [withDelay] is true for better UI feedback
   Future<void> load() async {
@@ -69,9 +63,12 @@ class ProjectsStateNotifier extends StateNotifier<List<FlutterProject>> {
 
   /// Reloads one project
   Future<void> reload(FlutterProject project) async {
-    final index = state.indexWhere((item) => item == project);
-    // Update project
-    state[index] = project;
+    final index = state.indexWhere((item) => item.path == project.path);
+    if (index == -1) return;
+    // Update project from disk
+    state[index] = FlutterProject.fromProject(
+      Project.loadFromDirectory(Directory(project.path)),
+    );
 
     /// Notify state
     state = [...state];
@@ -79,8 +76,8 @@ class ProjectsStateNotifier extends StateNotifier<List<FlutterProject>> {
 
   /// Adds a project
   Future<void> addProject(BuildContext context, String path) async {
-    final project = await FVMClient.getProjectByDirectory(Directory(path));
-    if (project.isFlutterProject) {
+    final project = Project.loadFromDirectory(Directory(path));
+    if (project.isFlutter) {
       final ref = ProjectRef(name: path.split('/').last, path: path);
       await ProjectsService.box.put(path, ref);
       await load();
@@ -91,8 +88,8 @@ class ProjectsStateNotifier extends StateNotifier<List<FlutterProject>> {
   }
 
   /// Removes a project
-  void removeProject(Directory projectDir) {
-    ProjectsService.box.delete(projectDir.path);
+  void removeProject(String path) {
+    ProjectsService.box.delete(path);
     load();
   }
 }

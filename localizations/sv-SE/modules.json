@@ -48,7 +48,10 @@
       "flutterPathIsPointingOn": "Flutter sökvägen (PATH) pekar på\n ",
       "changeThePathTo": "Ändra sökvägen (path) till\n",
       "ifYouWantToFlutterSdkThroughFvm": "om du vill uppdatera Flutter SDK genom FVM",
-      "howToUpdateYourPath": "Hur vill du uppdatera sökvägen (path)?"
+      "howToUpdateYourPath": "Hur vill du uppdatera sökvägen (path)?",
+      "couldNotUpgradeVersionname": "Det gick inte att uppgradera {{versionName}}",
+      "forceUpgradeDiscardsChanges": "Tvingad uppgradering tar bort alla lokala ändringar i denna SDK och uppgraderar den sedan. Dina projekt påverkas inte.",
+      "forceUpgrade": "Tvinga uppgradering"
     }
   },
   "projects": {

@@ -1,4 +1,3 @@
-import 'package:fvm/fvm.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/legacy.dart';
 
@@ -45,13 +44,6 @@ class _SettingsStateNotifier extends StateNotifier<AllSettings> {
     }
   }
 
-  Future<void> _checkFvmSettingsChanges(FvmSettings settings) async {
-    final changed = settings != _prevState.fvm;
-    if (changed) {
-      await FVMClient.saveSettings(settings);
-    }
-  }
-
   late AllSettings _prevState;
 
   Future<void> _loadState() async {
@@ -60,12 +52,10 @@ class _SettingsStateNotifier extends StateNotifier<AllSettings> {
     state = AllSettings.create(sidekick: sidekickSettings);
 
     //Go get async state
-    final fvmSettings = await FVMClient.readSettings();
     final flutterSettings = await FlutterConfigService.getFlutterConfig();
     state = AllSettings(
       // Set state
       sidekick: sidekickSettings,
-      fvm: fvmSettings,
       flutter: FlutterSettings.fromMap(flutterSettings),
     );
   }
@@ -77,7 +67,6 @@ class _SettingsStateNotifier extends StateNotifier<AllSettings> {
       // Trigger refresh
 
       state = state.copy();
-      await _checkFvmSettingsChanges(settings.fvm);
       await _checkAppSettingsChanges(settings.sidekick);
       await _checkAnalyticsChanges(settings.flutter);
       // Set previous state only after success

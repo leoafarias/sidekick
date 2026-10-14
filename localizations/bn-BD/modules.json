@@ -48,7 +48,10 @@
       "flutterPathIsPointingOn": "Flutter PATH নির্দেশ করে\n ",
       "changeThePathTo": "PATH পরিবর্তন করুন\n",
       "ifYouWantToFlutterSdkThroughFvm": "আপনি যদি FVM এর মাধ্যমে Flutter SDK আপডেট করতে চান",
-      "howToUpdateYourPath": "কিভাবে PATH আপডেট করবেন?"
+      "howToUpdateYourPath": "কিভাবে PATH আপডেট করবেন?",
+      "couldNotUpgradeVersionname": "{{versionName}} আপগ্রেড করা যায়নি",
+      "forceUpgradeDiscardsChanges": "জোরপূর্বক আপগ্রেড এই SDK-এর সব স্থানীয় পরিবর্তন বাতিল করে তারপর এটি আপগ্রেড করে। আপনার প্রজেক্টগুলো প্রভাবিত হবে না।",
+      "forceUpgrade": "জোরপূর্বক আপগ্রেড"
     }
   },
   "projects": {

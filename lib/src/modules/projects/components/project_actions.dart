@@ -70,12 +70,12 @@ class ProjectActions extends ConsumerWidget {
     return PopupMenuButton<ProjectActionOptions>(
       onSelected: (result) {
         if (result == ProjectActionOptions.remove) {
-          ref.read(projectsProvider.notifier).removeProject(project.projectDir);
+          ref.read(projectsProvider.notifier).removeProject(project.path);
         }
 
         if (result == ProjectActionOptions.openDirectory) {
           OpenFile.open(
-            project.projectDir.absolute.path,
+            project.path,
           );
         }
       },

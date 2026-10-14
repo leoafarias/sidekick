@@ -22,7 +22,7 @@ class CacheDateDisplay extends HookWidget {
 
     void setCacheDir() async {
       if (release != null && release?.isCached == true) {
-        cacheDirStat.value = await release!.cache?.dir.stat();
+        cacheDirStat.value = await (release?.cache == null ? null : Directory(release!.cache!.directory).stat());
       }
     }
 

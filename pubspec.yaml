@@ -27,7 +27,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_spinkit: ^5.0.0
-  fvm: ^2.4.1
+  fvm: ^4.3.1
   google_fonts: ^8.0.0
   hive: ^2.0.4
   hive_flutter: ^1.0.0
@@ -94,6 +94,9 @@ flutter_intl:
 
 dependency_overrides:
   cli_util: ^0.4.0
+  # fvm depends on dart_console, which constrains intl to ^0.18.0 but only
+  # uses DateFormat, which is compatible with the version Flutter pins.
+  intl: ^0.20.2
 
 # Check this first
 sidekick:

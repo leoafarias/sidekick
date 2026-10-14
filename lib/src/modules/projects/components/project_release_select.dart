@@ -60,7 +60,7 @@ class ProjectReleaseSelect extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               project.pinnedVersion != null
-                  ? Caption(project.pinnedVersion!)
+                  ? Caption(project.pinnedVersion!.nameWithAlias)
                   : Caption(
                       context.i18n('modules:projects.choose'),
                     ),

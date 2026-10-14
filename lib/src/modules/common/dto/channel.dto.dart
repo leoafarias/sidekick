@@ -5,7 +5,7 @@ import 'release.dto.dart';
 /// Releae channel dto
 class ChannelDto extends ReleaseDto {
   /// Latest releae of a channel
-  final Release? currentRelease;
+  final FlutterSdkRelease? currentRelease;
 
   /// SDK Version
   final String? sdkVersion;

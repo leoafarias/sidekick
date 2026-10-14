@@ -16,10 +16,10 @@ abstract class ReleaseDto {
   final String name;
 
   /// Release
-  Release? release;
+  FlutterSdkRelease? release;
 
   /// Cached release
-  CacheVersion? cache;
+  CacheFlutterVersion? cache;
 
   /// If needs setup
   bool needSetup;

@@ -7,7 +7,7 @@ class VersionDto extends ReleaseDto {
   /// Constructor
   VersionDto({
     required super.name,
-    required Release super.release,
+    required FlutterSdkRelease super.release,
     required super.needSetup,
     required super.cache,
     required super.isGlobal,

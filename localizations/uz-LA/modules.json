@@ -48,7 +48,10 @@
       "flutterPathIsPointingOn": "Flutter PATH muhiti ko'rsatuvchi manzil \n ",
       "changeThePathTo": "Ushbu manzilga ozhartirish \n",
       "ifYouWantToFlutterSdkThroughFvm": "Agar siz Flutter SDKni FVM yordamida o'zgartirmoqchi bo'lsangiz",
-      "howToUpdateYourPath": "Manzilni qanday sozlash mumkin?"
+      "howToUpdateYourPath": "Manzilni qanday sozlash mumkin?",
+      "couldNotUpgradeVersionname": "{{versionName}} yangilanmadi",
+      "forceUpgradeDiscardsChanges": "Majburiy yangilash ushbu SDK dagi barcha mahalliy oʻzgarishlarni bekor qiladi va keyin uni yangilaydi. Loyihalaringizga taʼsir qilmaydi.",
+      "forceUpgrade": "Majburiy yangilash"
     }
   },
   "projects": {

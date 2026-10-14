@@ -48,7 +48,10 @@
       "flutterPathIsPointingOn": "Flutter PATH вказує на\n",
       "changeThePathTo": "Змініть шлях на\n",
       "ifYouWantToFlutterSdkThroughFvm": "якщо ви хочете оновити Flutter SDK через FVM",
-      "howToUpdateYourPath": "Як оновити шлях?"
+      "howToUpdateYourPath": "Як оновити шлях?",
+      "couldNotUpgradeVersionname": "Не вдалося оновити {{versionName}}",
+      "forceUpgradeDiscardsChanges": "Примусове оновлення скасовує всі локальні зміни в цьому SDK, а потім оновлює його. Ваші проєкти не буде змінено.",
+      "forceUpgrade": "Примусово оновити"
     }
   },
   "projects": {

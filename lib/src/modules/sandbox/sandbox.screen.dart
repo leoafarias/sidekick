@@ -157,8 +157,8 @@ class SandboxScreen extends HookConsumerWidget {
               children: [
                 ListTile(
                   dense: true,
-                  title: Text(project.name ?? ''),
-                  subtitle: Text(project.projectDir.path),
+                  title: Text(project.name),
+                  subtitle: Text(project.path),
                   trailing: processing
                       ? OutlinedButton(
                           style: OutlinedButton.styleFrom(
