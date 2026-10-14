@@ -177,6 +177,7 @@ jobs:
               capabilities: "internetClient,removableStorage"
               certificate_path: windows\dev-cert.pfx
               certificate_password: ${{ env.DEV_CERT_PASS }}
+              signtool_options: "/v /td SHA256"
               install_certificate: false
               build_windows: false
               store: false
