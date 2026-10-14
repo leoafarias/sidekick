@@ -35,6 +35,13 @@ class AllSettings {
 }
 
 /// Sidekick settings
+/// i18next options for the app.
+///
+/// Interpolated values are not HTML-escaped: strings are shown in Text
+/// widgets, so escaping would render `&quot;` or `&gt;` instead of quotes or
+/// `>` (for example in errors, paths and version constraints).
+const kI18NextOptions = I18NextOptions(escapeValue: false);
+
 class SidekickSettings {
   /// Constructor
   SidekickSettings({
@@ -50,7 +57,7 @@ class SidekickSettings {
           dataSource: AssetBundleLocalizationDataSource(
             bundlePath: 'localizations',
           ),
-          // options: I18NextOptions(formatter: languageManager.formatter),
+          options: kI18NextOptions,
         );
 
   /// Storage key

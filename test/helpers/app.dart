@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/misc.dart' show Override;
 import 'package:i18next/i18next.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:sidekick/src/modules/settings/settings.dto.dart';
 import 'package:sidekick/src/theme.dart';
 
 /// Loads translations straight from the `localizations` folder
@@ -52,6 +53,7 @@ Widget testApp(
             I18NextLocalizationDelegate(
               locales: [locale],
               dataSource: _FileDataSource(),
+              options: kI18NextOptions,
             ),
             ...GlobalMaterialLocalizations.delegates,
             GlobalWidgetsLocalizations.delegate,

@@ -33,4 +33,23 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Remove'), findsOneWidget);
   });
+
+  testWidgets('shows load errors without HTML escaping', (tester) async {
+    final project = FlutterProject.unavailable(
+      '/tmp/payments_sdk',
+      ProjectLoadError.unreadable,
+      details: 'Unsupported value for "version" (>=1.0 & <2.0)',
+    );
+
+    await pumpTestApp(
+      tester,
+      Scaffold(body: ProjectListItem(project, versionSelect: true)),
+    );
+
+    expect(
+      find.text('Could not read project: '
+          'Unsupported value for "version" (>=1.0 & <2.0)'),
+      findsOneWidget,
+    );
+  });
 }
