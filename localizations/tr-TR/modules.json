@@ -68,6 +68,9 @@
       "remove": "Kaldır",
       "openTerminalPlayground": "Terminal Oyun alanını Aç",
       "openIde": "{{ideName}}'de aç",
+      "openIn": "Şurada aç...",
+      "couldNotOpenIde": "Proje {{ideName}} ile açılamadı",
+      "noIdesFound": "Desteklenen IDE bulunamadı",
       "selectAFlutterSdkVersion": "Flutter SDK sürümü seç",
       "noFlutterProjectsHaveBeenAddedYet": "Henüz Flutter projesi eklenmedi.",
       "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Flutter projesini ekleyin. Proje bilgileri burada görüntülenecektir."
@@ -154,7 +157,13 @@
       "resetToDefaultSettings": "Varsayılan Ayarlara Sıfırla",
       "reset": "Sıfırla",
       "ideSelection": "IDE",
-      "whatIdeDoYouWantToOpenYourProjectsWith": "Projelerinizi açmak istediğiniz IDE'yi seçin"
+      "whatIdeDoYouWantToOpenYourProjectsWith": "Projelerinizi açmak istediğiniz IDE'yi seçin",
+      "ideNone": "Hiçbiri",
+      "ideCustom": "Özel uygulama",
+      "ideNotFound": "{{ideName}} (bulunamadı)",
+      "ideNotFoundDescription": "{{ideName}} bu bilgisayarda bulunamadı. Başka bir IDE seçin.",
+      "detectIdesAgain": "Yüklü IDE'leri yeniden algıla",
+      "detectingIdes": "Yüklü IDE'ler algılanıyor..."
     }
   },
   "updater": {

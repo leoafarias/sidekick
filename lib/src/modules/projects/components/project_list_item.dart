@@ -3,10 +3,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../components/mdi_icons.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 import 'package:sidekick/src/modules/settings/settings.provider.dart';
-import 'package:sidekick/src/modules/settings/settings.utils.dart';
 
 import '../../../components/atoms/typography.dart';
 import '../../../components/molecules/version_install_button.dart';
+import '../../ide/components/open_in_ide_button.dart';
 import '../../releases/releases.provider.dart';
 import '../../sandbox/sandbox.screen.dart';
 import '../project.dto.dart';
@@ -38,12 +38,6 @@ class ProjectListItem extends ConsumerWidget {
 
     final sidekickSettings = ref.watch(settingsProvider).sidekick;
 
-    final ideName = sidekickSettings.ide;
-
-    final ide = ideName != null
-        ? supportedIDEs.firstWhere((element) => element.name == ideName)
-        : null;
-
     void openProjectPlayground() {
       Navigator.push(
         context,
@@ -52,13 +46,6 @@ class ProjectListItem extends ConsumerWidget {
             project: project,
           ),
         ),
-      );
-    }
-
-    void openIde() {
-      ide?.launch(
-        project.path,
-        customLocation: sidekickSettings.customIdeLocation,
       );
     }
 
@@ -126,21 +113,8 @@ class ProjectListItem extends ConsumerWidget {
                       onPressed: openProjectPlayground,
                     ),
                   ),
-                  if (ideName != null)
-                    Tooltip(
-                      message: context.i18n(
-                        'modules:projects.components.openIde',
-                        variables: {
-                          'ideName': ide?.name,
-                        },
-                      ),
-                      child: IconButton(
-                        iconSize: 20,
-                        splashRadius: 20,
-                        icon: ide?.icon ?? Icon(MdiIcons.alphaPBox),
-                        onPressed: openIde,
-                      ),
-                    ),
+                  OpenInSelectedIdeButton(project.path, sidekickSettings),
+                  OpenInIdeMenu(project.path, sidekickSettings),
                   const Spacer(),
                   versionSelect
                       ? Row(

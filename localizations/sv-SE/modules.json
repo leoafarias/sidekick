@@ -68,6 +68,9 @@
       "remove": "Ta bort",
       "openTerminalPlayground": "Öppna Terminal-sandlåda",
       "openIde": "Öppna i {{ideName}}",
+      "openIn": "Öppna i...",
+      "couldNotOpenIde": "Det gick inte att öppna projektet i {{ideName}}",
+      "noIdesFound": "Inga IDE:er som stöds hittades",
       "selectAFlutterSdkVersion": "välj en Flutter SDK version",
       "noFlutterProjectsHaveBeenAddedYet": "Inga Flutter-projekt har ännu lagts till.",
       "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Lägg till ditt Flutter-projekt, projekt-informationen kommer visas här."
@@ -154,7 +157,13 @@
       "resetToDefaultSettings": "Återställ standardinställningar",
       "reset": "Återställ",
       "ideSelection": "IDE",
-      "whatIdeDoYouWantToOpenYourProjectsWith": "Välj vilken IDE att öppna dina projekt med."
+      "whatIdeDoYouWantToOpenYourProjectsWith": "Välj vilken IDE att öppna dina projekt med.",
+      "ideNone": "Ingen",
+      "ideCustom": "Anpassat program",
+      "ideNotFound": "{{ideName}} (hittades inte)",
+      "ideNotFoundDescription": "{{ideName}} hittades inte på den här datorn. Välj en annan IDE.",
+      "detectIdesAgain": "Identifiera installerade IDE:er igen",
+      "detectingIdes": "Identifierar installerade IDE:er..."
     }
   },
   "updater": {

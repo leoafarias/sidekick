@@ -68,6 +68,9 @@
       "remove": "إزالة",
       "openTerminalPlayground": "فتح ملعب طرفي",
       "openIde": "فتح في {{idName}}",
+      "openIn": "فتح في...",
+      "couldNotOpenIde": "تعذر فتح المشروع في {{ideName}}",
+      "noIdesFound": "لم يتم العثور على بيئات تطوير مدعومة",
       "selectAFlutterSdkVersion": "حدد إصدار Flutter SDK",
       "noFlutterProjectsHaveBeenAddedYet": "لم يتم اضافة أي مشاريع Flutter.",
       "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "إضافة مشروع Flutter الخاص بك. مشروعاتك سيتم عرضها هنا."
@@ -154,7 +157,13 @@
       "resetToDefaultSettings": "إعادة الضبط إلى الإعدادات الافتراضية",
       "reset": "إعادة الضبط",
       "ideSelection": "IDE",
-      "whatIdeDoYouWantToOpenYourProjectsWith": "حدد IDE لفتح مشاريعك باستخدام"
+      "whatIdeDoYouWantToOpenYourProjectsWith": "حدد IDE لفتح مشاريعك باستخدام",
+      "ideNone": "لا شيء",
+      "ideCustom": "تطبيق مخصص",
+      "ideNotFound": "{{ideName}} (غير موجود)",
+      "ideNotFoundDescription": "لم يتم العثور على {{ideName}} على هذا الكمبيوتر. اختر بيئة تطوير أخرى.",
+      "detectIdesAgain": "إعادة اكتشاف بيئات التطوير المثبتة",
+      "detectingIdes": "جارٍ اكتشاف بيئات التطوير المثبتة..."
     }
   },
   "updater": {

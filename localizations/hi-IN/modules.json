@@ -68,6 +68,9 @@
       "remove": "हटाएँ",
       "openTerminalPlayground": "टर्मिनल प्लेगरेंड खोलें",
       "openIde": "{{ideName}} में खोलें",    
+      "openIn": "इसमें खोलें...",
+      "couldNotOpenIde": "प्रोजेक्ट को {{ideName}} में नहीं खोला जा सका",
+      "noIdesFound": "कोई समर्थित IDE नहीं मिला",
       "selectAFlutterSdkVersion": "एक Flutter SDK संस्करण चुनें",
       "noFlutterProjectsHaveBeenAddedYet": "कोई Flutter प्रोजेक्ट अभी तक जोड़ा नहीं गया है",
       "addYourFlutterProjectProjectsInformationWillBeDisplayedHere":"अपने Flutter प्रोजेक्ट जोड़ें प्रोजेक्ट जानकारी यहां प्रदर्शित की जाएगी"
@@ -154,7 +157,13 @@
       "resetToDefaultSettings": "डिफ़ॉल्ट सेटिंग्स को रीसेट करें",
       "reset": "रीसेट",
       "ideSelection":"IDE चयन",
-      "whatIdeDoYouWantToOpenYourProjectsWith": "आपकी प्रोजेक्ट्स को क्या आप खोलना चाहते हैं?"
+      "whatIdeDoYouWantToOpenYourProjectsWith": "आपकी प्रोजेक्ट्स को क्या आप खोलना चाहते हैं?",
+      "ideNone": "कोई नहीं",
+      "ideCustom": "कस्टम एप्लिकेशन",
+      "ideNotFound": "{{ideName}} (नहीं मिला)",
+      "ideNotFoundDescription": "इस कंप्यूटर पर {{ideName}} नहीं मिला। कोई दूसरा IDE चुनें।",
+      "detectIdesAgain": "इंस्टॉल किए गए IDE फिर से खोजें",
+      "detectingIdes": "इंस्टॉल किए गए IDE खोजे जा रहे हैं..."
     }
   },
   "updater": {

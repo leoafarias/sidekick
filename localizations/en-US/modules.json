@@ -68,6 +68,9 @@
       "remove": "Remove",
       "openTerminalPlayground": "Open Terminal Playground",
       "openIde": "Open in {{ideName}}",
+      "openIn": "Open in...",
+      "couldNotOpenIde": "Could not open the project in {{ideName}}",
+      "noIdesFound": "No supported IDEs found",
       "selectAFlutterSdkVersion": "select a Flutter SDK version",
       "noFlutterProjectsHaveBeenAddedYet": "No Flutter projects have been added yet.",
       "addYourFlutterProjectProjectsInformationWillBeDisplayedHere": "Add your Flutter project The project information will be displayed here."
@@ -154,7 +157,13 @@
       "resetToDefaultSettings": "Reset to Default Settings",
       "reset": "Reset",
       "ideSelection": "IDE",
-      "whatIdeDoYouWantToOpenYourProjectsWith": "Select the IDE to open your projects with"
+      "whatIdeDoYouWantToOpenYourProjectsWith": "Select the IDE to open your projects with",
+      "ideNone": "None",
+      "ideCustom": "Custom application",
+      "ideNotFound": "{{ideName}} (not found)",
+      "ideNotFoundDescription": "{{ideName}} was not found on this computer. Choose another IDE.",
+      "detectIdesAgain": "Detect installed IDEs again",
+      "detectingIdes": "Detecting installed IDEs..."
     }
   },
   "updater": {
