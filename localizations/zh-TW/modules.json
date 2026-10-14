@@ -48,7 +48,10 @@
       "flutterPathIsPointingOn": "Flutter PATH 指向\n ",
       "changeThePathTo": "將 path 改為 \n",
       "ifYouWantToFlutterSdkThroughFvm": "如果你想通過 FVM 來更新 Flutter SDK",
-      "howToUpdateYourPath": "如何更新 path ？"
+      "howToUpdateYourPath": "如何更新 path ？",
+      "couldNotUpgradeVersionname": "無法升級 {{versionName}}",
+      "forceUpgradeDiscardsChanges": "強制升級會捨棄此 SDK 中的所有本機變更，然後進行升級。你的專案不受影響。",
+      "forceUpgrade": "強制升級"
     }
   },
   "projects": {

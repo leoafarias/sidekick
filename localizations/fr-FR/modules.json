@@ -48,7 +48,10 @@
       "flutterPathIsPointingOn": "Flutter PATH pointe vers\n",
       "changeThePathTo": "Modifier le path pour\n",
       "ifYouWantToFlutterSdkThroughFvm": "si vous souhaitez mettre à jour le SDK Flutter via FVM",
-      "howToUpdateYourPath": "Comment mettre à jour le path ?"
+      "howToUpdateYourPath": "Comment mettre à jour le path ?",
+      "couldNotUpgradeVersionname": "Impossible de mettre à jour {{versionName}}",
+      "forceUpgradeDiscardsChanges": "La mise à jour forcée supprime toutes les modifications locales de ce SDK, puis le met à jour. Vos projets ne sont pas affectés.",
+      "forceUpgrade": "Forcer la mise à jour"
     }
   },
   "projects": {

@@ -18,6 +18,7 @@ import 'src/modules/common/app_shell.dart';
 import 'src/modules/common/constants.dart';
 import 'src/modules/projects/project.dto.dart';
 import 'src/modules/projects/projects.service.dart';
+import 'src/modules/common/utils/navigator_key.dart';
 import 'src/modules/settings/settings.dto.dart';
 import 'src/modules/settings/settings.service.dart';
 import 'src/modules/settings/settings.utils.dart';
@@ -86,6 +87,7 @@ class FvmApp extends StatelessWidget {
         final settings = SettingsService.read();
         return OKToast(
           child: MaterialApp(
+            navigatorKey: navigatorKey,
             localizationsDelegates: [
               settings.localizationsDelegate,
               ...GlobalMaterialLocalizations.delegates,

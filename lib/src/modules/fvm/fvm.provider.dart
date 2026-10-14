@@ -1,5 +1,6 @@
 // ignore_for_file: top_level_function_literal_block
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -7,6 +8,8 @@ import 'package:hooks_riverpod/legacy.dart';
 import 'package:fvm/fvm.dart' hide getDirectorySize;
 // ignore: implementation_imports
 import 'package:fvm/src/services/logger_service.dart';
+// ignore: implementation_imports
+import 'package:fvm/src/services/process_service.dart';
 import 'package:watcher/watcher.dart';
 
 import '../../modules/common/dto/release.dto.dart';
@@ -47,11 +50,116 @@ class _ConsoleLogger extends Logger {
   }
 }
 
+/// FVM process runner that streams echoed output to the Sidekick console.
+///
+/// FVM echoes output by inheriting stdio, which a desktop app has no
+/// terminal for, so the output is piped to the console instead and also
+/// collected for error messages.
+class _ConsoleProcessService extends ProcessService {
+  const _ConsoleProcessService(super.context);
+
+  static const _gitScopedEnvVars = {
+    'GIT_ALTERNATE_OBJECT_DIRECTORIES',
+    'GIT_CONFIG',
+    'GIT_CONFIG_PARAMETERS',
+    'GIT_CONFIG_COUNT',
+    'GIT_OBJECT_DIRECTORY',
+    'GIT_DIR',
+    'GIT_WORK_TREE',
+    'GIT_IMPLICIT_WORK_TREE',
+    'GIT_GRAFT_FILE',
+    'GIT_INDEX_FILE',
+    'GIT_NO_REPLACE_OBJECTS',
+    'GIT_REPLACE_REF_BASE',
+    'GIT_PREFIX',
+    'GIT_SHALLOW_FILE',
+    'GIT_COMMON_DIR',
+  };
+
+  @override
+  Future<ProcessResult> run(
+    String command, {
+    List<String> args = const [],
+    String? workingDirectory,
+    Map<String, String>? environment,
+    bool throwOnError = true,
+    bool echoOutput = false,
+    bool runInShell = true,
+  }) async {
+    if (!echoOutput) {
+      return super.run(
+        command,
+        args: args,
+        workingDirectory: workingDirectory,
+        environment: environment,
+        throwOnError: throwOnError,
+        runInShell: runInShell,
+      );
+    }
+
+    // Same environment handling as FVM: keep git, flutter and dart from
+    // picking up the git repository of the parent process
+    final name = command.split(RegExp(r'[/\\]')).last.split('.').first;
+    final scrubGitEnv = const {'git', 'flutter', 'dart'}.contains(
+      name.toLowerCase(),
+    );
+    final effectiveEnvironment = scrubGitEnv
+        ? ({...context.environment, ...?environment}
+          ..removeWhere((key, _) => _gitScopedEnvVars.contains(key)))
+        : environment;
+
+    _fvmOutput.add('\$ $command ${args.join(' ')}\n');
+    final process = await Process.start(
+      command,
+      args,
+      workingDirectory: workingDirectory,
+      environment: effectiveEnvironment,
+      includeParentEnvironment: !scrubGitEnv,
+      runInShell: runInShell,
+    );
+
+    final stdoutBuffer = StringBuffer();
+    final stderrBuffer = StringBuffer();
+    Future<void> pipe(Stream<List<int>> stream, StringBuffer buffer) {
+      return stream.transform(utf8.decoder).forEach((chunk) {
+        buffer.write(chunk);
+        _fvmOutput.add(chunk);
+      });
+    }
+
+    await Future.wait([
+      pipe(process.stdout, stdoutBuffer),
+      pipe(process.stderr, stderrBuffer),
+    ]);
+    final exitCode = await process.exitCode;
+
+    final result = ProcessResult(
+      process.pid,
+      exitCode,
+      stdoutBuffer.toString(),
+      stderrBuffer.toString(),
+    );
+    if (throwOnError && exitCode != 0) {
+      final output = result.stderr.toString().trim().isNotEmpty
+          ? result.stderr.toString().trim()
+          : result.stdout.toString().trim();
+      throw ProcessException(command, args, output, exitCode);
+    }
+
+    return result;
+  }
+}
+
 /// FVM context shared by the app
 final fvmContext = FvmContext.create(
   debugLabel: 'sidekick',
   skipInput: true,
-  generatorsOverride: {Logger: _ConsoleLogger.new},
+  // Verbose makes FVM echo git clone output while installing
+  logLevel: Level.verbose,
+  generatorsOverride: {
+    Logger: _ConsoleLogger.new,
+    ProcessService: _ConsoleProcessService.new,
+  },
 );
 
 /// Cache provider

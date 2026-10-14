@@ -48,7 +48,10 @@
       "flutterPathIsPointingOn": "Flutter PATH şuraya gösteriyor\n ",
       "changeThePathTo": "PATH'i şuraya değiştir\n",
       "ifYouWantToFlutterSdkThroughFvm": "FVM ile Flutter SDK güncellemek istiyorsanız",
-      "howToUpdateYourPath": "PATH nasıl güncellenir?"
+      "howToUpdateYourPath": "PATH nasıl güncellenir?",
+      "couldNotUpgradeVersionname": "{{versionName}} yükseltilemedi",
+      "forceUpgradeDiscardsChanges": "Zorla yükseltme, bu SDK'daki tüm yerel değişiklikleri siler ve ardından yükseltir. Projeleriniz etkilenmez.",
+      "forceUpgrade": "Zorla yükselt"
     }
   },
   "projects": {

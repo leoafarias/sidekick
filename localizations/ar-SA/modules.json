@@ -48,7 +48,10 @@
       "flutterPathIsPointingTo": "يشير Flutter PATH إلى ",
       "changeThePathTo": "قم بتغيير المسار إلى\n",
       "ifYouWantToFlutterSdkThroughFvm": "إذا كنت ترغب في Flutter SDK من خلال FVM",
-      "howToUpdateYourPath": "كيفية تحديث المسار الخاص بك؟"
+      "howToUpdateYourPath": "كيفية تحديث المسار الخاص بك؟",
+      "couldNotUpgradeVersionname": "تعذّرت ترقية {{versionName}}",
+      "forceUpgradeDiscardsChanges": "تتجاهل الترقية الإجبارية أي تغييرات محلية في حزمة SDK هذه ثم تقوم بترقيتها. لن تتأثر مشاريعك.",
+      "forceUpgrade": "ترقية إجبارية"
     }
   },
   "projects": {

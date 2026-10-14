@@ -48,7 +48,10 @@
       "flutterPathIsPointingOn": "Obecny ścieżka Flutter PATH to\n ",
       "changeThePathTo": "Zmień ścieżkę na\n",
       "ifYouWantToFlutterSdkThroughFvm": "jeśli chcesz aktualizować Flutter SDK za pomocą FVM",
-      "howToUpdateYourPath": "Jak zaktualizować ścieżkę?"
+      "howToUpdateYourPath": "Jak zaktualizować ścieżkę?",
+      "couldNotUpgradeVersionname": "Nie udało się zaktualizować {{versionName}}",
+      "forceUpgradeDiscardsChanges": "Wymuszona aktualizacja odrzuca wszystkie lokalne zmiany w tym SDK, a następnie je aktualizuje. Twoje projekty nie zostaną zmienione.",
+      "forceUpgrade": "Wymuś aktualizację"
     }
   },
   "projects": {

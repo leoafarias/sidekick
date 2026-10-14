@@ -48,7 +48,10 @@
       "flutterPathIsPointingOn": "Flutter PATH муҳити кўрсатувчи манзил \n ",
       "changeThePathTo": "Ушбу манзилга ўзҳартириш \n",
       "ifYouWantToFlutterSdkThroughFvm": "Агар сиз Flutter SDKни FVM ёрдамида ўзгартирмоқчи бўлсангиз",
-      "howToUpdateYourPath": "Манзилни қандай созлаш мумкин?"
+      "howToUpdateYourPath": "Манзилни қандай созлаш мумкин?",
+      "couldNotUpgradeVersionname": "{{versionName}} янгиланмади",
+      "forceUpgradeDiscardsChanges": "Мажбурий янгилаш ушбу SDK даги барча маҳаллий ўзгаришларни бекор қилади ва кейин уни янгилайди. Лойиҳаларингизга таъсир қилмайди.",
+      "forceUpgrade": "Мажбурий янгилаш"
     }
   },
   "projects": {

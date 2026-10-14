@@ -48,7 +48,10 @@
       "flutterPathIsPointingOn": "Flutter PATH निम्नलिखित स्थान पर स्थानांतरित है\n ",    
       "changeThePathTo": "स्थानांतरित करने के लिए पथ बदलें\n",
       "ifYouWantToFlutterSdkThroughFvm": "यदि आप Flutter SDK के माध्यम से FVM के माध्यम से अपडेट करना चाहते हैं",
-      "howToUpdateYourPath": "पथ को अपडेट करने के लिए क्या करना चाहते हैं?"
+      "howToUpdateYourPath": "पथ को अपडेट करने के लिए क्या करना चाहते हैं?",
+      "couldNotUpgradeVersionname": "{{versionName}} को अपग्रेड नहीं किया जा सका",
+      "forceUpgradeDiscardsChanges": "फ़ोर्स अपग्रेड इस SDK के सभी स्थानीय बदलाव हटा देता है और फिर इसे अपग्रेड करता है। आपके प्रोजेक्ट प्रभावित नहीं होंगे।",
+      "forceUpgrade": "फ़ोर्स अपग्रेड"
     }
   },
   "projects": {

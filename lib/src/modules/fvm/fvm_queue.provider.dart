@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -16,11 +17,13 @@ import 'package:i18next/i18next.dart';
 import 'package:sidekick/src/modules/common/utils/helpers.dart';
 
 import '../../modules/common/dto/release.dto.dart';
+import '../../modules/common/utils/navigator_key.dart';
 import '../../modules/common/utils/notify.dart';
 import '../projects/project.dto.dart';
 import '../projects/projects.provider.dart';
 import '../settings/settings.dto.dart';
 import '../settings/settings.provider.dart';
+import 'dialogs/force_upgrade_dialog.dart';
 import 'fvm.provider.dart';
 
 class FvmQueue {
@@ -56,6 +59,7 @@ enum QueueAction {
   install,
   installAndSetup,
   channelUpgrade,
+  channelForceUpgrade,
   remove,
   setGlobal,
 }
@@ -103,6 +107,11 @@ class FvmQueueState extends StateNotifier<FvmQueue> {
   /// adds upgrade action to queue
   void upgrade(BuildContext context, ReleaseDto version) {
     _addToQueue(context, version, action: QueueAction.channelUpgrade);
+  }
+
+  /// adds force upgrade action to queue
+  void forceUpgrade(BuildContext context, ReleaseDto version) {
+    _addToQueue(context, version, action: QueueAction.channelForceUpgrade);
   }
 
   /// Adds remove action to queue
@@ -170,14 +179,23 @@ class FvmQueueState extends StateNotifier<FvmQueue> {
           );
           break;
         case QueueAction.channelUpgrade:
-          // Capture output so a failed upgrade surfaces Flutter's message
-          await fvmContext.get<FlutterService>().run(
-                'flutter',
-                ['upgrade'],
-                item.version.cache!,
-                throwOnError: true,
-                echoOutput: false,
-              );
+        case QueueAction.channelForceUpgrade:
+          final force = item.action == QueueAction.channelForceUpgrade;
+          try {
+            // Throw so a failed upgrade surfaces Flutter's message
+            await fvmContext.get<FlutterService>().run(
+                  'flutter',
+                  ['upgrade', if (force) '--force'],
+                  item.version.cache!,
+                  throwOnError: true,
+                );
+          } on ProcessException catch (e) {
+            // Flutter suggests --force only when forcing would fix it,
+            // e.g. when the SDK checkout has local changes
+            if (force || !e.message.contains('--force')) rethrow;
+            _suggestForceUpgrade(item.version, e.message);
+            break;
+          }
           notify(
             i18next.t(
               'modules:fvm.channelItemversionnameHasBeenUpgraded',
@@ -253,6 +271,24 @@ class FvmQueueState extends StateNotifier<FvmQueue> {
         },
       ),
     );
+  }
+
+  Future<void> _suggestForceUpgrade(
+    ReleaseDto version,
+    String message,
+  ) async {
+    final context = navigatorKey.currentContext;
+    if (context == null) {
+      notifyError(message);
+      return;
+    }
+
+    final confirmed = await showForceUpgradeDialog(
+      context,
+      version.name,
+      message,
+    );
+    if (confirmed && context.mounted) forceUpgrade(context, version);
   }
 
   Future<CacheFlutterVersion> _install(FlutterVersion version) {
