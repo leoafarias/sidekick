@@ -149,7 +149,6 @@ jobs:
               display_name: Sidekick DEV Build
               publisher_display_name: Eduardo M.
               identity_name: SidekickContributors.SidekickFlutterDEV
-              publisher: Sidekick Contributors
               msix_version: 1.0.0.0
               logo_path: assets\promo-windows\icon.png
               architecture: x64
@@ -164,7 +163,7 @@ jobs:
       - name: Write MS Store
         uses: DamianReeves/write-file-action@v1.0
         with:
-          path: lib/modifiers.dart
+          path: lib/src/modifiers.dart
           contents: |
             // Generated file. Do not modify
             const isMSStore = false;
@@ -174,16 +173,16 @@ jobs:
         run: flutter build windows
 
       - name: Create MSIX
-        run: flutter pub run msix:create
+        run: dart run msix:create
 
       - name: Compress artifacts
-        run: tar.exe -a -c -f windows-dev.zip build/windows/Runner/release
+        run: tar.exe -a -c -f windows-dev.zip build/windows/x64/runner/Release
 
       - name: Upload Build MSIX
         uses: actions/upload-artifact@v4
         with:
           name: sidekick-windows-dev.msix
-          path: build/windows/Runner/release/sidekick.msix
+          path: build/windows/x64/runner/Release/sidekick.msix
 
       - name: Upload Build Zip
         uses: actions/upload-artifact@v4
