@@ -15,6 +15,8 @@
 # Usage: scripts/package_mac_release.sh <zip name>
 set -eu
 
+SCRIPTS_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 ZIP_NAME="$1"
 RELEASE_DIR="build/macos/Build/Products/Release"
 APP="$RELEASE_DIR/Sidekick.app"
@@ -24,7 +26,7 @@ WORK_DIR="${RUNNER_TEMP:-$(mktemp -d)}"
 
 if [ -z "${MACOS_CERT_P12:-}" ]; then
   echo "::warning::MACOS_CERT_P12 is not set, the macOS build is not signed or notarized"
-  ./scripts/create_mac_dmg.sh
+  "$SCRIPTS_DIR/create_mac_dmg.sh"
   ditto -c -k --keepParent "$APP" "$ZIP_NAME"
   exit 0
 fi
@@ -61,7 +63,7 @@ codesign --force --timestamp --options runtime \
   --entitlements "$ENTITLEMENTS" --sign "$IDENTITY" "$APP"
 codesign --verify --deep --strict --verbose=2 "$APP"
 
-./scripts/create_mac_dmg.sh
+"$SCRIPTS_DIR/create_mac_dmg.sh"
 codesign --force --timestamp --sign "$IDENTITY" "$DMG"
 
 # Notarizing the DMG also notarizes the app inside it
