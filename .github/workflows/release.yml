@@ -143,6 +143,14 @@ jobs:
       - name: Flutter build app
         run: flutter build macos
 
+      # The tag being built can predate the packaging scripts, so take them
+      # from the workflow's own commit
+      - name: Checkout release scripts
+        uses: actions/checkout@v4
+        with:
+          path: release-tools
+          sparse-checkout: scripts
+
       # Signs and notarizes when the Apple secrets are set
       - name: Sign, notarize and package
         env:
@@ -151,7 +159,7 @@ jobs:
           APPLE_API_KEY_P8: ${{ secrets.APPLE_API_KEY_P8 }}
           APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
           APPLE_API_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER_ID }}
-        run: ./scripts/package_mac_release.sh "macos-$TAG.zip"
+        run: ./release-tools/scripts/package_mac_release.sh "macos-$TAG.zip"
 
       - name: Upload artifacts to release
         uses: svenstaro/upload-release-action@v2
