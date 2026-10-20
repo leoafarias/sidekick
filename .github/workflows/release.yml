@@ -1,20 +1,31 @@
 on:
   release:
-    types: # This configuration does not affect the page_build event above
+    types:
       - created
+  # Rebuilds the installers of an existing release, e.g. after a failed run
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to build, e.g. 1.2.0"
+        required: true
 
 name: Release Artifacts
+
+env:
+  TAG: ${{ github.event.release.tag_name || inputs.tag }}
 
 jobs:
   build-linux:
     name: "Build Linux"
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
 
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
 
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2.6.1
@@ -31,28 +42,13 @@ jobs:
         run: flutter pub global activate cider
 
       - name: Set new Flutter version
-        run: cider version ${{ github.event.release.tag_name }}
+        run: cider version "$TAG"
 
-      - name: Set Sidekick.desktop version
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: Sidekick.desktop
-          contents: Version=${{ github.event.release.tag_name }}
-          write-mode: append
-
-      - name: Set Sidekick.desktop version (snap version)
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: snap/gui/sidekick.desktop
-          contents: Version=${{ github.event.release.tag_name }}
-          write-mode: append
-
-      - name: Set snapcraft.yaml version
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: snap/snapcraft.yaml
-          contents: 'version: "${{ github.event.release.tag_name }}"'
-          write-mode: append
+      - name: Set desktop entry and snap versions
+        run: |
+          echo "Version=$TAG" >> Sidekick.desktop
+          echo "Version=$TAG" >> snap/gui/sidekick.desktop
+          echo "version: \"$TAG\"" >> snap/snapcraft.yaml
 
       - name: Set release changelog
         run: cider release
@@ -61,7 +57,7 @@ jobs:
         run: flutter pub get
 
       - name: Build Runner & version
-        run: flutter pub run build_runner build --delete-conflicting-outputs
+        run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Flutter build app
         run: flutter build linux
@@ -69,17 +65,15 @@ jobs:
       - name: Compress artifacts
         uses: TheDoctor0/zip-release@0.6.1
         with:
-          filename: linux-${{ github.event.release.tag_name }}.zip
+          filename: linux-${{ env.TAG }}.zip
 
       - name: Upload files to a GitHub release
-        uses: svenstaro/upload-release-action@2.2.1
+        uses: svenstaro/upload-release-action@v2
         with:
-          # GitHub token.
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          # Local file to upload.
-          file: linux-${{ github.event.release.tag_name }}.zip
-          # Tag to use as a release.
-          tag: ${{ github.ref }}
+          file: linux-${{ env.TAG }}.zip
+          tag: ${{ env.TAG }}
+          overwrite: true
 
       - name: Install appbuilder deps
         run: |
@@ -97,25 +91,25 @@ jobs:
           appimage-builder --recipe AppImageBuilder.yml
 
       - name: Upload AppImage to release
-        uses: svenstaro/upload-release-action@2.2.1
+        uses: svenstaro/upload-release-action@v2
         with:
-          # GitHub token.
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          # Local file to upload.
           file: Sidekick-latest-x86_64.AppImage
-          asset_name: sidekick-linux-${{ github.event.release.tag_name }}.AppImage
-          # Tag to use as a release.
-          tag: ${{ github.ref }}
+          asset_name: sidekick-linux-${{ env.TAG }}.AppImage
+          tag: ${{ env.TAG }}
+          overwrite: true
 
   build-macos:
     name: "Build MacOS"
     runs-on: macos-latest
-    timeout-minutes: 30
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    timeout-minutes: 60
+    permissions:
+      contents: write
 
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
 
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2.6.1
@@ -135,7 +129,7 @@ jobs:
         run: flutter pub global activate cider
 
       - name: Set new Flutter version
-        run: cider version ${{ github.event.release.tag_name }}
+        run: cider version "$TAG"
 
       - name: Set release changelog
         run: cider release
@@ -144,48 +138,48 @@ jobs:
         run: flutter pub get
 
       - name: Build Runner & version
-        run: flutter pub run build_runner build --delete-conflicting-outputs
+        run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Flutter build app
         run: flutter build macos
 
-      - name: Create dmg
-        run: |
-          ./scripts/create_mac_dmg.sh
-
-      - name: Compress artifacts
-        run: zip -r macos-${{ github.event.release.tag_name }}.zip build/macos/Build/Products/Release
+      # Signs and notarizes when the Apple secrets are set
+      - name: Sign, notarize and package
+        env:
+          MACOS_CERT_P12: ${{ secrets.MACOS_CERT_P12 }}
+          MACOS_CERT_PASS: ${{ secrets.MACOS_CERT_PASS }}
+          APPLE_API_KEY_P8: ${{ secrets.APPLE_API_KEY_P8 }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER_ID }}
+        run: ./scripts/package_mac_release.sh "macos-$TAG.zip"
 
       - name: Upload artifacts to release
-        uses: svenstaro/upload-release-action@2.2.1
+        uses: svenstaro/upload-release-action@v2
         with:
-          # GitHub token.
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          # Local file to upload.
-          file: macos-${{ github.event.release.tag_name }}.zip
-          # Tag to use as a release.
-          tag: ${{ github.ref }}
+          file: macos-${{ env.TAG }}.zip
+          tag: ${{ env.TAG }}
+          overwrite: true
 
       - name: Upload DMG to release
-        uses: svenstaro/upload-release-action@2.2.1
+        uses: svenstaro/upload-release-action@v2
         with:
-          # GitHub token.
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          # Local file to upload.
           file: build/macos/Build/Products/Release/Sidekick.dmg
-          asset_name: sidekick-macos-${{ github.event.release.tag_name }}.dmg
-          # Tag to use as a release.
-          tag: ${{ github.ref }}
+          asset_name: sidekick-macos-${{ env.TAG }}.dmg
+          tag: ${{ env.TAG }}
+          overwrite: true
 
   build-windows-msstore:
     name: "Build Windows for MS Store"
     runs-on: windows-latest
     timeout-minutes: 30
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
 
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2.6.1
@@ -199,78 +193,71 @@ jobs:
         run: flutter pub global activate cider
 
       - name: Set new Flutter version
-        run: cider version ${{ github.event.release.tag_name }}
+        run: cider version ${{ env.TAG }}
 
       - name: Set release changelog
         run: cider release
 
-      - name: Generate MSIX-compatible version
-        uses: ashley-taylor/regex-property-action@1.2
-        id: msixver
-        with:
-          value: ${{ github.event.release.tag_name }}
-          regex: (\-\w+)|(\+\w+)
-          replacement: ""
-
-      - name: Write MSIX
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: pubspec.yaml
-          contents: |
-            msix_config:
-              display_name: Flutter Sidekick
-              publisher_display_name: Eduardo M.
-              identity_name: SidekickContributors.SidekickFlutter
-              publisher: Sidekick Contributors
-              msix_version: ${{steps.msixver.outputs.value }}.0
-              logo_path: assets\promo-windows\icon.png
-              architecture: x64
-              capabilities: "internetClient,removableStorage"
-              certificate_path: windows\SIDEKICK-CERT.pfx
-              certificate_password: ${{ secrets.WIN_CERT_PASS }}
-              store: true
-              build_windows: false
-          write-mode: append
+      # The Store signs the package itself, so the identity must match the
+      # one reserved in Partner Center and no certificate is used
+      - name: Write MSIX config
+        shell: bash
+        run: |
+          cat >> pubspec.yaml <<EOF
+          msix_config:
+            display_name: Sidekick
+            publisher_display_name: Eduardo M.
+            identity_name: 44484EduardoM.SidekickFlutter
+            publisher: CN=1E781C91-227E-4505-B5B8-7E5EFE39D3A6
+            msix_version: $(echo "$TAG" | sed -E 's/[-+].*//').0
+            logo_path: assets\promo-windows\icon.png
+            architecture: x64
+            capabilities: "internetClient,removableStorage"
+            store: true
+            build_windows: false
+          EOF
 
       - name: Write MS Store true
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: lib/src/modifiers.dart
-          contents: |
-            // Generated file. Do not modify
-            const isMSStore = true;
-          write-mode: overwrite
+        shell: bash
+        run: |
+          cat > lib/src/modifiers.dart <<EOF
+          // Generated file. Do not modify
+          const isMSStore = true;
+          EOF
 
       - name: Flutter get packages
         run: flutter pub get
 
       - name: Build Runner & version
-        run: flutter pub run build_runner build --delete-conflicting-outputs
+        run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Flutter build app
         run: flutter build windows
 
       - name: Create MSIX
-        run: flutter pub run msix:create
+        run: dart run msix:create
 
       - name: Upload MSIX to release
-        uses: svenstaro/upload-release-action@2.2.1
+        uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/windows/x64/runner/Release/sidekick.msix
-          asset_name: sidekick-windows-${{ github.event.release.tag_name }}-MS-NS.msix
-          tag: ${{ github.ref }}
+          asset_name: sidekick-windows-${{ env.TAG }}-MS-NS.msix
+          tag: ${{ env.TAG }}
+          overwrite: true
 
       # TODO: Upload automatically to MS Store. MSFT is having some issues with their Azure AD so cannot be done yet.
 
   build-windows-standard:
     name: "Build Windows standard"
     runs-on: windows-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+    timeout-minutes: 30
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
 
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2.6.1
@@ -284,66 +271,80 @@ jobs:
         run: flutter pub global activate cider
 
       - name: Set new Flutter version
-        run: cider version ${{ github.event.release.tag_name }}
+        run: cider version ${{ env.TAG }}
 
       - name: Set release changelog
         run: cider release
 
-      - name: Generate MSIX-compatible version
-        uses: ashley-taylor/regex-property-action@1.2
-        id: msixver
-        with:
-          value: ${{ github.event.release.tag_name }}
-          regex: (\-\w+)|(\+\w+)
-          replacement: ""
+      # Signed with the same self-signed certificate as the dev builds. Its
+      # public part (sidekick-windows.cer) is attached to the release so
+      # users can trust it before installing.
+      - name: Write signing certificate
+        shell: bash
+        env:
+          WIN_DEV_CERT_PFX: ${{ secrets.WIN_DEV_CERT_PFX }}
+        run: echo "$WIN_DEV_CERT_PFX" | base64 --decode > windows/release-cert.pfx
 
-      - name: Write MSIX
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: pubspec.yaml
-          contents: |
-            msix_config:
-              display_name: Sidekick
-              publisher_display_name: Eduardo M.
-              identity_name: 44484EduardoM.SidekickFlutter
-              publisher: CN=1E781C91-227E-4505-B5B8-7E5EFE39D3A6
-              msix_version: ${{steps.msixver.outputs.value }}.0
-              logo_path: assets\promo-windows\icon.png
-              architecture: x64
-              capabilities: "internetClient,removableStorage"
-              certificate_path: windows\SIDEKICK-CERT.pfx
-              certificate_password: ${{ secrets.WIN_CERT_PASS }}
-              store: false
-              install_certificate: false
-              build_windows: false
-          write-mode: append
+      # No publisher, so msix reads it from the certificate
+      - name: Write MSIX config
+        shell: bash
+        env:
+          WIN_DEV_CERT_PASS: ${{ secrets.WIN_DEV_CERT_PASS }}
+        run: |
+          cat >> pubspec.yaml <<EOF
+          msix_config:
+            display_name: Sidekick
+            publisher_display_name: Eduardo M.
+            identity_name: SidekickContributors.SidekickFlutter
+            msix_version: $(echo "$TAG" | sed -E 's/[-+].*//').0
+            logo_path: assets\promo-windows\icon.png
+            architecture: x64
+            capabilities: "internetClient,removableStorage"
+            certificate_path: windows\release-cert.pfx
+            certificate_password: $WIN_DEV_CERT_PASS
+            signtool_options: "/v /td SHA256"
+            store: false
+            install_certificate: false
+            build_windows: false
+          EOF
 
       - name: Flutter get packages
         run: flutter pub get
 
       - name: Build Runner & version
-        run: flutter pub run build_runner build --delete-conflicting-outputs
+        run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Flutter build app
         run: flutter build windows
 
       - name: Create MSIX
-        run: flutter pub run msix:publish
+        run: dart run msix:create
 
       - name: Compress artifacts
-        run: tar.exe -zcvf windows-${{ github.event.release.tag_name }}.zip build/windows/x64/runner/Release
+        run: tar.exe -a -c -f windows-${{ env.TAG }}.zip build/windows/x64/runner/Release
 
       - name: Upload artifacts to release
-        uses: svenstaro/upload-release-action@2.2.1
+        uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: windows-${{ github.event.release.tag_name }}.zip
-          tag: ${{ github.ref }}
+          file: windows-${{ env.TAG }}.zip
+          tag: ${{ env.TAG }}
+          overwrite: true
 
       - name: Upload MSIX to release
-        uses: svenstaro/upload-release-action@2.2.1
+        uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/windows/x64/runner/Release/sidekick.msix
-          asset_name: sidekick-windows-${{ github.event.release.tag_name }}.msix
-          tag: ${{ github.ref }}
+          asset_name: sidekick-windows-${{ env.TAG }}.msix
+          tag: ${{ env.TAG }}
+          overwrite: true
+
+      - name: Upload certificate to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: windows/sidekick-dev.cer
+          asset_name: sidekick-windows.cer
+          tag: ${{ env.TAG }}
+          overwrite: true
